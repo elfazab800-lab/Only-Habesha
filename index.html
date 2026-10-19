@@ -106,9 +106,30 @@
       .form-grid { grid-template-columns: 1fr; }
       .wrap { width: min(100% - 28px, 1120px); }
     }
+
+    /* 18+ age verification gate */
+    #ageGate { position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,.97); display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #ageGate .age-box { width: 100%; max-width: 430px; background: #141414; color: #f7f3e9; border: 1px solid #d7ad4b; border-radius: 16px; padding: 30px 22px; text-align: center; box-shadow: 0 20px 70px #000; }
+    #ageGate h2 { color: #f4d98b; margin: 10px 0; }
+    #ageGate p { color: #d0c8b9; }
+    #ageGate button { width: 100%; margin-top: 12px; padding: 14px; }
+    #ageGate .age-no { background: #292929; color: white; border: 1px solid #555; }
+    body.age-locked { overflow: hidden; }
   </style>
 </head>
-<body>
+<body class="age-locked">
+  <div id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+    <div class="age-box">
+      <div style="font-size:48px" aria-hidden="true">🔞</div>
+      <div style="color:#d7ad4b;font-weight:900;letter-spacing:2px">ONLY HABESHA</div>
+      <h2 id="ageTitle">18+ AGE VERIFICATION</h2>
+      <p lang="am">ይህን ድረ-ገጽ ለመጠቀም 18 ዓመት ወይም ከዚያ በላይ መሆን አለብዎት።</p>
+      <p lang="am">18 ዓመት ሞልቶዎታል?</p>
+      <button class="primary" type="button" onclick="confirmAdult()">አዎ፣ 18 ዓመት ሞልቶኛል</button>
+      <button class="age-no" type="button" onclick="denyAdult()">አይ፣ 18 ዓመት አልሞላኝም</button>
+    </div>
+  </div>
+
   <header>
     <div class="wrap nav">
       <a class="brand" href="#home">ONLY <span>HABESHA</span></a>
@@ -263,6 +284,25 @@
   </footer>
 
   <script>
+
+    // The age gate appears on every fresh page load; no confirmation is stored.
+    function confirmAdult() {
+      const gate = document.getElementById('ageGate');
+      if (gate) gate.remove();
+      document.body.classList.remove('age-locked');
+    }
+
+    function denyAdult() {
+      const gate = document.getElementById('ageGate');
+      if (!gate) return;
+      gate.innerHTML = `
+        <div class="age-box">
+          <div style="font-size:48px" aria-hidden="true">🔞</div>
+          <h2>Access Denied</h2>
+          <p lang="am">ይቅርታ፣ ይህ ድረ-ገጽ ለ18 ዓመት በታች ለሆኑ ሰዎች አይፈቀድም።</p>
+        </div>`;
+    }
+
     const TELEGRAM_BOT_URL = 'https://t.me/OnlyhabeshanpaymantBot';
     const plans = {
       '1 Month': 990,
