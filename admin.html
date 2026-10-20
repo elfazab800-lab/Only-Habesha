@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="am"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Only Habesha Admin</title>
+<style>body{margin:0;background:#120d18;color:#fff8ef;font-family:system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px;box-sizing:border-box}.box{width:min(430px,100%);background:#211729;border:1px solid #4b3856;border-radius:16px;padding:24px;box-sizing:border-box}h1{color:#e8bd62}.muted{color:#c9bdcf}label{display:block;margin:14px 0 6px}input{width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #4b3856;background:#130e18;color:white}button{background:#e8bd62;color:#1b1220;border:0;border-radius:8px;padding:12px 16px;font-weight:800;width:100%;margin-top:16px}.status{color:#e8bd62;min-height:24px}</style></head>
+<body><main class="box"><h1>Only Habesha Admin</h1><p class="muted">የተፈቀደለት አስተዳዳሪ ብቻ ይግባ።</p>
+<form id="login"><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" required><button type="submit">ግባ</button></form><p class="status" id="status" aria-live="polite"></p>
+<div id="inside" hidden><h2>እንኳን ደህና መጡ</h2><p>አሁን በአስተዳዳሪ መለያ ገብተዋል።</p><p class="muted">ይህ የመሠረታዊ የመግቢያ መረጋገጫ ነው። የአባላት ዝርዝር/ክፍያ ማስተዳደር በተለየ ዳታቤዝ እና የአስተዳዳሪ API መጨመር ይፈልጋል።</p><button id="logout">ውጣ</button></div></main>
+<script>
+const form=document.getElementById('login'),statusEl=document.getElementById('status'),inside=document.getElementById('inside');
+async function check(){try{const r=await fetch('/api/admin-session');const d=await r.json();if(r.ok&&d.authenticated){form.hidden=true;inside.hidden=false}}catch(e){}}
+form.addEventListener('submit',async e=>{e.preventDefault();statusEl.textContent='በመፈተሽ ላይ…';try{const r=await fetch('/api/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('password').value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'መግባት አልተሳካም');form.hidden=true;inside.hidden=false;statusEl.textContent=''}catch(err){statusEl.textContent=err.message||'መግባት አልተሳካም';document.getElementById('password').value=''}});
+document.getElementById('logout').addEventListener('click',async()=>{await fetch('/api/admin-logout',{method:'POST'});location.reload()});check();
+</script></body></html>
