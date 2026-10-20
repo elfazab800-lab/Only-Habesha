@@ -1,30 +1,302 @@
 <!doctype html>
 <html lang="am">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#120d18">
-<title>ONLY HABESHA — VIP Access</title>
+<title>REAL HABESHA SECRET — VIP Access</title>
 <style>
 :root{--bg:#120d18;--panel:#211729;--gold:#e8bd62;--text:#fff8ef;--muted:#c9bdcf;--line:#4b3856;--pink:#e75d91}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#33203c,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Ethiopic",sans-serif;line-height:1.6}a{color:var(--gold)}.wrap{width:min(1050px,92%);margin:auto}.hero{padding:58px 0 30px;text-align:center}.badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:5px 13px;border-radius:99px;font-size:13px}.hero h1{font-size:clamp(35px,8vw,64px);line-height:1.1;margin:18px 0 10px}.gold{color:var(--gold)}.hero p,.muted{color:var(--muted)}.panel{background:rgba(33,23,41,.92);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.plan{border:1px solid var(--line);border-radius:14px;padding:20px;background:#1b1322}.price{font-size:30px;color:var(--gold);font-weight:800}.btn{display:inline-block;background:var(--gold);color:#1b1220;text-decoration:none;border:0;border-radius:10px;padding:12px 17px;font-weight:800;cursor:pointer;font-size:15px}.btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}button{font:inherit}.field{margin:12px 0}.field label{display:block;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:12px;border-radius:9px;border:1px solid var(--line);background:#130e18;color:var(--text)}.payment-number{font-size:25px;font-weight:800;letter-spacing:1px;color:var(--gold)}.notice{background:#30231a;border:1px solid #77572a;padding:12px;border-radius:10px;color:#ffe5ac}.steps li{margin:8px 0}footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13px}.hidden{display:none!important}.age{position:fixed;inset:0;background:#0d0911f5;z-index:10;display:grid;place-items:center;padding:20px}.agebox{max-width:450px;text-align:center;background:var(--panel);border:1px solid var(--gold);border-radius:18px;padding:28px}.status{min-height:22px;color:var(--gold)}@media(max-width:520px){.hero{padding-top:38px}.panel{padding:17px}}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#33203c,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Ethiopic",sans-serif;line-height:1.6}
+a{color:var(--gold)}
+.wrap{width:min(1050px,92%);margin:auto}
+.hero{padding:58px 0 30px;text-align:center}
+.badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:5px 13px;border-radius:99px;font-size:13px}
+.hero h1{font-size:clamp(35px,8vw,64px);line-height:1.1;margin:18px 0 10px}
+.gold{color:var(--gold)}
+.hero p,.muted{color:var(--muted)}
+.panel{background:rgba(33,23,41,.92);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.plan{border:1px solid var(--line);border-radius:14px;padding:20px;background:#1b1322}
+.price{font-size:30px;color:var(--gold);font-weight:800}
+.btn{display:inline-block;background:var(--gold);color:#1b1220;text-decoration:none;border:0;border-radius:10px;padding:12px 17px;font-weight:800;cursor:pointer;font-size:15px}
+.btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+button{font:inherit}
+.field{margin:12px 0}
+.field label{display:block;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:12px;border-radius:9px;border:1px solid var(--line);background:#130e18;color:var(--text)}
+.payment-number{font-size:25px;font-weight:800;letter-spacing:1px;color:var(--gold)}
+.notice{background:#30231a;border:1px solid #77572a;padding:12px;border-radius:10px;color:#ffe5ac}
+.steps li{margin:8px 0}
+footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+.age{position:fixed;inset:0;background:#0d0911f5;z-index:10;display:grid;place-items:center;padding:20px}
+.agebox{max-width:450px;text-align:center;background:var(--panel);border:1px solid var(--gold);border-radius:18px;padding:28px}
+.status{min-height:22px;color:var(--gold)}
+.language-switch{position:absolute;top:14px;right:4%;z-index:2;display:flex;gap:6px}
+.language-switch button{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}
+.language-switch button.active{background:var(--gold);color:#1b1220}
+@media(max-width:520px){.hero{padding-top:55px}.panel{padding:17px}}
 </style>
 </head>
 <body>
-<div class="age" id="ageGate"><div class="agebox"><div style="font-size:44px">🔞</div><h2>18+ Access</h2><p>ይህ ድረ-ገጽ ለ18 ዓመት እና ከዚያ በላይ ለሆኑ ሰዎች ብቻ ነው።</p><button class="btn" onclick="confirmAdult()">18+ ነኝ — ግባ</button> <button class="btn secondary" onclick="denyAdult()">አልደረስኩም</button></div></div>
-<header class="hero"><div class="wrap"><span class="badge">REAL HABESHA SECRET</span><h1>ONLY <span class="gold">HABESHA</span></h1><p>የVIP አባልነት • የአባላት ይዘት • ቀላል የክፍያ ሂደት</p><a class="btn" href="#plans">VIP አባል ሁን</a></div></header>
+
+<div class="language-switch" aria-label="Language selector">
+<button type="button" id="langAm" onclick="setLanguage('am')">አማርኛ</button>
+<button type="button" id="langEn" onclick="setLanguage('en')">English</button>
+</div>
+
+<div class="age" id="ageGate">
+  <div class="agebox">
+    <div style="font-size:44px">🔞</div>
+    <h2 data-i18n="ageTitle">18+ መዳረሻ</h2>
+    <p data-i18n="ageText">ይህ ድረ-ገጽ ለ18 ዓመት እና ከዚያ በላይ ለሆኑ ሰዎች ብቻ ነው።</p>
+    <button class="btn" onclick="confirmAdult()" data-i18n="ageYes">18+ ነኝ — ግባ</button>
+    <button class="btn secondary" onclick="denyAdult()" data-i18n="ageNo">አልደረስኩም</button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge" data-i18n="badge">REAL HABESHA SECRET</span>
+    <h1>ONLY <span class="gold">HABESHA</span></h1>
+    <p data-i18n="heroText">የVIP አባልነት • የአባላት ይዘት • ቀላል የክፍያ ሂደት</p>
+    <a class="btn" href="#plans" data-i18n="join">የVIP አባል ሁን</a>
+  </div>
+</header>
+
 <main class="wrap">
-<section class="panel"><h2>ወደ Only Habesha እንኳን በደህና መጡ</h2><p class="muted">የሚፈልጉትን የአባልነት ጊዜ ይምረጡ። ክፍያው በTelebirr ከተፈጸመ በኋላ ደረሰኙን ወደ Telegram ቦት ይላኩ። ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይላክልዎታል።</p></section>
-<section id="plans"><h2>የአባልነት እቅዶች</h2><div class="grid">
-<div class="plan"><h3>1 ወር</h3><div class="price">990 ብር</div><p class="muted">የአንድ ወር VIP መዳረሻ</p><button class="btn" onclick="selectPlan('1 Month',990)">ይህን ምረጥ</button></div>
-<div class="plan"><h3>6 ወር</h3><div class="price">1,990 ብር</div><p class="muted">የስድስት ወር VIP መዳረሻ</p><button class="btn" onclick="selectPlan('6 Months',1990)">ይህን ምረጥ</button></div>
-<div class="plan"><h3>2 ዓመት</h3><div class="price">4,990 ብር</div><p class="muted">የሁለት ዓመት VIP መዳረሻ</p><button class="btn" onclick="selectPlan('2 Years',4990)">ይህን ምረጥ</button></div>
-</div></section>
-<section class="panel" id="payment"><h2>Telebirr ክፍያ</h2><div class="field"><label>የተመረጠው እቅድ</label><div id="selectedPlan">1 Month</div></div><div class="field"><label>የሚከፈለው መጠን</label><div class="payment-number"><span id="selectedAmount">990</span> ብር</div></div><p>ተቀባይ ስም: <strong>Elias Ali</strong></p><p>የTelebirr ቁጥር:</p><div class="payment-number" id="paymentNumber">0985975112</div><button class="btn secondary" onclick="copyNumber()">ቁጥሩን ኮፒ አድርግ</button><p class="status" id="copyStatus" aria-live="polite"></p><div class="notice">ክፍያ ከመላክዎ በፊት የተቀባዩን ስምና መጠን ያረጋግጡ። የደረሰኝ ማስረጃ ይያዙ።</div></section>
-<section class="panel"><h2>VIP መዳረሻ እንዴት ይገኛል?</h2><ol class="steps"><li>ከላይ ያለውን Telebirr ቁጥር በመጠቀም ክፍያ ይፈጽሙ።</li><li>ደረሰኙን እና የተመረጠውን እቅድ ያዘጋጁ።</li><li>ወደ Telegram ቦት በመሄድ የክፍያ ማስረጃውን ይላኩ።</li><li>ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይደርስዎታል።</li></ol><a class="btn" href="https://t.me/OnlyhabeshanpaymantBot" target="_blank" rel="noopener">Telegram Payment Bot ክፈት</a></section>
-</main><footer><div class="wrap"><strong class="gold">ONLY HABESHA</strong><br>የአባልነት ክፍያ በእጅ ይረጋገጣል።</div></footer>
+
+<section class="panel">
+  <h2 data-i18n="welcomeTitle">ወደ Real Habesha Secret እንኳን በደህና መጡ</h2>
+  <p class="muted" data-i18n="welcomeText">የሚፈልጉትን የአባልነት ጊዜ ይምረጡ። በTelebirr ክፍያ ከፈጸሙ በኋላ ደረሰኙን ወደ Telegram ቦት ይላኩ። ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይላክልዎታል።</p>
+</section>
+
+<section id="plans">
+  <h2 data-i18n="plansTitle">የአባልነት እቅዶች</h2>
+  <div class="grid">
+
+    <div class="plan">
+      <h3 data-i18n="oneMonth">1 ወር</h3>
+      <div class="price">990 ብር</div>
+      <p class="muted" data-i18n="oneMonthDesc">የአንድ ወር VIP መዳረሻ</p>
+      <button class="btn" onclick="selectPlan('1 Month',990)" data-i18n="choose">ይህን ምረጥ</button>
+    </div>
+
+    <div class="plan">
+      <h3 data-i18n="sixMonths">6 ወር</h3>
+      <div class="price">1,990 ብር</div>
+      <p class="muted" data-i18n="sixMonthsDesc">የስድስት ወር VIP መዳረሻ</p>
+      <button class="btn" onclick="selectPlan('6 Months',1990)" data-i18n="choose">ይህን ምረጥ</button>
+    </div>
+
+    <div class="plan">
+      <h3 data-i18n="twoYears">2 ዓመት</h3>
+      <div class="price">4,990 ብር</div>
+      <p class="muted" data-i18n="twoYearsDesc">የሁለት ዓመት VIP መዳረሻ</p>
+      <button class="btn" onclick="selectPlan('2 Years',4990)" data-i18n="choose">ይህን ምረጥ</button>
+    </div>
+
+  </div>
+</section>
+
+<section class="panel" id="payment">
+  <h2 data-i18n="paymentTitle">የTelebirr ክፍያ</h2>
+
+  <div class="field">
+    <label data-i18n="selectedPlanLabel">የተመረጠው እቅድ</label>
+    <div id="selectedPlan">1 Month</div>
+  </div>
+
+  <div class="field">
+    <label data-i18n="amountLabel">የሚከፈለው መጠን</label>
+    <div class="payment-number">
+      <span id="selectedAmount">990</span>
+      <span data-i18n="birr">ብር</span>
+    </div>
+  </div>
+
+  <p><span data-i18n="recipient">የተቀባይ ስም:</span> <strong>Elias Ali</strong></p>
+  <p data-i18n="telebirrNumber">የTelebirr ቁጥር:</p>
+  <div class="payment-number" id="paymentNumber">0985975112</div>
+
+  <button class="btn secondary" onclick="copyNumber()" data-i18n="copyNumber">ቁጥሩን ኮፒ አድርግ</button>
+  <p class="status" id="copyStatus" aria-live="polite"></p>
+
+  <div class="notice" data-i18n="paymentNotice">ክፍያ ከመላክዎ በፊት የተቀባዩን ስምና መጠን ያረጋግጡ። የደረሰኝ ማስረጃ ይያዙ።</div>
+</section>
+
+<section class="panel">
+  <h2 data-i18n="howTitle">የVIP መዳረሻ እንዴት ይገኛል?</h2>
+  <ol class="steps">
+    <li data-i18n="step1">ከላይ ያለውን የTelebirr ቁጥር በመጠቀም ክፍያ ይፈጽሙ።</li>
+    <li data-i18n="step2">ደረሰኙን እና የመረጡትን እቅድ ያዘጋጁ።</li>
+    <li data-i18n="step3">ወደ Telegram ቦት በመሄድ የክፍያ ማስረጃውን ይላኩ።</li>
+    <li data-i18n="step4">ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይደርስዎታል።</li>
+  </ol>
+  <a class="btn" href="https://t.me/OnlyhabeshanpaymantBot" target="_blank" rel="noopener" data-i18n="openBot">የTelegram ክፍያ ቦት ክፈት</a>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <strong class="gold">ONLY HABESHA</strong><br>
+    <span data-i18n="footerText">የአባልነት ክፍያ በእጅ ይረጋገጣል።</span>
+  </div>
+</footer>
+
 <script>
-function confirmAdult(){document.getElementById('ageGate').classList.add('hidden')}
-function denyAdult(){document.getElementById('ageGate').innerHTML='<div class="agebox"><h2>Access denied</h2><p>ይህን ድረ-ገጽ መጠቀም አይችሉም።</p></div>'}
-function selectPlan(name,amount){document.getElementById('selectedPlan').textContent=name;document.getElementById('selectedAmount').textContent=amount;document.getElementById('payment').scrollIntoView({behavior:'smooth'})}
-async function copyNumber(){try{await navigator.clipboard.writeText('0985975112');document.getElementById('copyStatus').textContent='ቁጥሩ ተኮፒ ተደርጓል።'}catch(e){document.getElementById('copyStatus').textContent='ቁጥሩን በእጅ ይቅዱ: 0985975112'}}
-</script></body></html>
+const translations = {
+am: {
+ageTitle:'18+ መዳረሻ',
+ageText:'ይህ ድረ-ገጽ ለ18 ዓመት እና ከዚያ በላይ ለሆኑ ሰዎች ብቻ ነው።',
+ageYes:'18+ ነኝ — ግባ',
+ageNo:'አልደረስኩም',
+badge:'REAL HABESHA SECRET',
+heroText:'የVIP አባልነት • የአባላት ይዘት • ቀላል የክፍያ ሂደት',
+join:'የVIP አባል ሁን',
+welcomeTitle:'ወደ Real Habesha Secret እንኳን በደህና መጡ',
+welcomeText:'የሚፈልጉትን የአባልነት ጊዜ ይምረጡ። በTelebirr ክፍያ ከፈጸሙ በኋላ ደረሰኙን ወደ Telegram ቦት ይላኩ። ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይላክልዎታል።',
+plansTitle:'የአባልነት እቅዶች',
+oneMonth:'1 ወር',
+oneMonthDesc:'የአንድ ወር VIP መዳረሻ',
+sixMonths:'6 ወር',
+sixMonthsDesc:'የስድስት ወር VIP መዳረሻ',
+twoYears:'2 ዓመት',
+twoYearsDesc:'የሁለት ዓመት VIP መዳረሻ',
+choose:'ይህን ምረጥ',
+paymentTitle:'የTelebirr ክፍያ',
+selectedPlanLabel:'የተመረጠው እቅድ',
+amountLabel:'የሚከፈለው መጠን',
+birr:'ብር',
+recipient:'የተቀባይ ስም:',
+telebirrNumber:'የTelebirr ቁጥር:',
+copyNumber:'ቁጥሩን ኮፒ አድርግ',
+paymentNotice:'ክፍያ ከመላክዎ በፊት የተቀባዩን ስምና መጠን ያረጋግጡ። የደረሰኝ ማስረጃ ይያዙ።',
+howTitle:'የVIP መዳረሻ እንዴት ይገኛል?',
+step1:'ከላይ ያለውን የTelebirr ቁጥር በመጠቀም ክፍያ ይፈጽሙ።',
+step2:'ደረሰኙን እና የመረጡትን እቅድ ያዘጋጁ።',
+step3:'ወደ Telegram ቦት በመሄድ የክፍያ ማስረጃውን ይላኩ።',
+step4:'ክፍያው በእጅ ከተረጋገጠ በኋላ የVIP ግብዣ ሊንክ ይደርስዎታል።',
+openBot:'የTelegram ክፍያ ቦት ክፈት',
+footerText:'የአባልነት ክፍያ በእጅ ይረጋገጣል።',
+accessDenied:'መግባት አይፈቀድም',
+deniedText:'ይህን ድረ-ገጽ መጠቀም አይችሉም።',
+copied:'ቁጥሩ ተኮፒ ተደርጓል።',
+copyFallback:'ቁጥሩን በእጅ ይቅዱ: 0985975112'
+},
+en: {
+ageTitle:'18+ Access',
+ageText:'This website is intended for adults aged 18 and over only.',
+ageYes:'I am 18+ — Enter',
+ageNo:'I am under 18',
+badge:'REAL HABESHA SECRET',
+heroText:'VIP Membership • Members-Only Content • Easy Payment Process',
+join:'Join VIP',
+welcomeTitle:'Welcome to Real Habesha Secret',
+welcomeText:'Choose your preferred membership period. After paying with Telebirr, send your receipt to the Telegram bot. Once your payment is manually verified, your VIP invitation link will be sent to you.',
+plansTitle:'Membership Plans',
+oneMonth:'1 Month',
+oneMonthDesc:'One month of VIP access',
+sixMonths:'6 Months',
+sixMonthsDesc:'Six months of VIP access',
+twoYears:'2 Years',
+twoYearsDesc:'Two years of VIP access',
+choose:'Choose Plan',
+paymentTitle:'Telebirr Payment',
+selectedPlanLabel:'Selected plan',
+amountLabel:'Amount due',
+birr:'ETB',
+recipient:'Recipient name:',
+telebirrNumber:'Telebirr number:',
+copyNumber:'Copy number',
+paymentNotice:'Before sending payment, verify the recipient name and amount. Keep your payment receipt as proof.',
+howTitle:'How to Get VIP Access',
+step1:'Make a payment using the Telebirr number above.',
+step2:'Keep your receipt and note the plan you selected.',
+step3:'Open the Telegram bot and send your payment proof.',
+step4:'After your payment is manually verified, you will receive your VIP invitation link.',
+openBot:'Open Telegram Payment Bot',
+footerText:'Membership payments are verified manually.',
+accessDenied:'Access Denied',
+deniedText:'You cannot use this website.',
+copied:'Number copied successfully.',
+copyFallback:'Copy this number manually: 0985975112'
+}
+};
+
+let currentLanguage = localStorage.getItem('onlyHabeshaLanguage') || 'am';
+
+function setLanguage(lang) {
+  currentLanguage = lang;
+  localStorage.setItem('onlyHabeshaLanguage', lang);
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+
+  document.getElementById('langAm').classList.toggle('active', lang === 'am');
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+
+  document.title = lang === 'am'
+    ? 'REAL HABESHA SECRET — የVIP መዳረሻ'
+    : 'REAL HABESHA SECRET — VIP Access';
+
+  const selected = document.getElementById('selectedPlan');
+  if (selected) {
+    const amount = document.getElementById('selectedAmount').textContent;
+    selected.textContent = amount === '990'
+      ? translations[lang].oneMonth
+      : amount === '1990'
+      ? translations[lang].sixMonths
+      : translations[lang].twoYears;
+  }
+}
+
+function confirmAdult() {
+  document.getElementById('ageGate').classList.add('hidden');
+}
+
+function denyAdult() {
+  document.getElementById('ageGate').innerHTML =
+    '<div class="agebox"><h2>' +
+    translations[currentLanguage].accessDenied +
+    '</h2><p>' +
+    translations[currentLanguage].deniedText +
+    '</p></div>';
+}
+
+function selectPlan(name, amount) {
+  document.getElementById('selectedAmount').textContent = amount;
+  document.getElementById('selectedPlan').textContent =
+    amount === 990
+      ? translations[currentLanguage].oneMonth
+      : amount === 1990
+      ? translations[currentLanguage].sixMonths
+      : translations[currentLanguage].twoYears;
+
+  document.getElementById('payment').scrollIntoView({behavior:'smooth'});
+}
+
+async function copyNumber() {
+  try {
+    await navigator.clipboard.writeText('0985975112');
+    document.getElementById('copyStatus').textContent =
+      translations[currentLanguage].copied;
+  } catch (e) {
+    document.getElementById('copyStatus').textContent =
+      translations[currentLanguage].copyFallback;
+  }
+}
+
+setLanguage(currentLanguage);
+</script>
+
+</body>
+</html>
