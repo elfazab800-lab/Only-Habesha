@@ -43,9 +43,21 @@ module.exports = async function handler(req, res) {
       { headers }
     );
 
-    if (!existingResponse.ok) {
-      throw new Error("Could not read Supabase video records.");
-    }
+
+if (!existingResponse.ok) {
+  const details = await existingResponse.text();
+
+  console.error(
+    "Supabase read error:",
+    existingResponse.status,
+    details
+  );
+
+  throw new Error(
+    `Could not read Supabase video records (HTTP ${existingResponse.status}).`
+  );
+}
+
 
     const existingRows = await existingResponse.json();
     const existingPaths = new Set(
