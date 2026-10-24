@@ -1,138 +1,82 @@
-
-const { list } = require("@vercel/blob");
+const { list } = require('@vercel/blob');
 
 module.exports = async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-  if (req.method !== "GET") {
-    res.setHeader("Allow", "GET");
-    return res.status(405).json({ error: "GET method required" });
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'GET method required' });
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+  // Support the newer secret name and the older project setup name.
+  const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({
-      error: "Supabase environment variables are missing."
-    });
+    console.error('Missing SUPABASE_URL or Supabase server key.');
+    return res.status(500).json({ error: 'Supabase environment variables are missing.' });
   }
 
-  const baseUrl = supabaseUrl.replace(/\/+$/, "");
+  const baseUrl = supabaseUrl.replace(/\/+$/, '');
   const headers = {
     apikey: supabaseKey,
     Authorization: `Bearer ${supabaseKey}`,
-    "Content-Type": "application/json"
+    Accept: 'application/json'
   };
 
   try {
-    // 1. Find existing videos in private Vercel Blob storage.
-    const result = await list({
-      prefix: "videos/",
-      limit: 1000,
-      access: "private"
-    });
-
-    const blobs = result.blobs.filter(blob =>
-      /\.(mp4|webm|mov|m4v|ogv)$/i.test(blob.pathname)
-    );
-
-    // 2. Read paths already registered in Supabase.
-    const existingResponse = await fetch(
-      `${baseUrl}/rest/v1/videos?select=pathname`,
+    // Read the columns that actually exist in this project's videos table.
+    // The existing table uses video_url/storage_path, not necessarily pathname.
+    const response = await fetch(
+      `${baseUrl}/rest/v1/videos?select=*&order=created_at.desc`,
       { headers }
     );
 
-
-if (!existingResponse.ok) {
-  const details = await existingResponse.text();
-
-  console.error(
-    "Supabase read error:",
-    existingResponse.status,
-    details
-  );
-
-  throw new Error(
-    `Could not read Supabase video records (HTTP ${existingResponse.status}).`
-  );
-}
-
-
-    const existingRows = await existingResponse.json();
-    const existingPaths = new Set(
-      existingRows.map(row => row.pathname)
-    );
-
-    // 3. Register only missing videos; preserve existing categories.
-    const missingRows = blobs
-      .filter(blob => !existingPaths.has(blob.pathname))
-      .map(blob => {
-        const filename = blob.pathname.split("/").pop();
-
-        const title = filename
-          .replace(/-[a-zA-Z0-9]{16,}(?=\.)/, "")
-          .replace(/\.[^.]+$/, "")
-          .replace(/[_-]+/g, " ")
-          .trim();
-
-        return {
-          title: title || "Premium Video",
-          pathname: blob.pathname,
-          category: blob.pathname.startsWith("videos/short/") ? "short" : "premium",
-          uploaded_at: blob.uploadedAt
-            ? new Date(blob.uploadedAt).toISOString()
-            : new Date().toISOString()
-        };
+    if (!response.ok) {
+      const details = await response.text();
+      console.error('Supabase videos query failed:', response.status, details);
+      return res.status(502).json({
+        error: 'Could not load video database.',
+        detail: `Supabase returned HTTP ${response.status}. Check the videos table and server key.`
       });
-
-    if (missingRows.length > 0) {
-      const insertResponse = await fetch(
-        `${baseUrl}/rest/v1/videos`,
-        {
-          method: "POST",
-          headers: {
-            ...headers,
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify(missingRows)
-        }
-      );
-
-      if (!insertResponse.ok) {
-        const details = await insertResponse.text();
-        console.error("Supabase insert error:", details);
-        throw new Error("Could not register videos in Supabase.");
-      }
     }
 
-    // 4. Return the public listing metadata only.
-    const videosResponse = await fetch(
-      `${baseUrl}/rest/v1/videos?select=id,title,pathname,thumbnail_path,category,uploaded_at&order=uploaded_at.desc`,
-      { headers }
-    );
+    const rows = await response.json();
+    const videos = rows
+      .filter(row => row.is_published !== false)
+      .map(row => {
+        const videoUrl = row.video_url || row.url || '';
+        const pathname = row.pathname || row.storage_path || videoUrl || '';
+        return {
+          id: row.id,
+          title: row.title || row.original_filename || 'Habesha Video',
+          description: row.description || '',
+          // Keep both names so older and newer front-end code can consume the API.
+          pathname,
+          video_url: videoUrl,
+          videoUrl,
+          storage_path: row.storage_path || '',
+          thumbnail_path: row.thumbnail_path || row.thumbnail_url || '',
+          category: normalizeCategory(row.category),
+          uploadedAt: row.uploaded_at || row.created_at || null,
+          is_published: row.is_published !== false,
+          mime_type: row.mime_type || ''
+        };
+      })
+      .filter(video => video.pathname || video.videoUrl);
 
-    if (!videosResponse.ok) {
-      throw new Error("Could not load videos from Supabase.");
-    }
-
-    const rows = await videosResponse.json();
-
-    return res.status(200).json({
-      videos: rows.map(row => ({
-        id: row.id,
-        title: row.title,
-        pathname: row.pathname,
-        thumbnail_path: row.thumbnail_path,
-        category: row.category,
-        uploadedAt: row.uploaded_at
-      }))
-    });
+    return res.status(200).json({ videos });
   } catch (error) {
-    console.error("Video database error:", error);
-
-    return res.status(500).json({
-      error: "Could not load video database."
-    });
+    console.error('Video database error:', error);
+    return res.status(500).json({ error: 'Could not load video database.' });
   }
 };
+
+function normalizeCategory(value) {
+  const category = String(value || 'short').trim().toLowerCase();
+  if (['short', 'short video', 'short videos', 'free', 'free video'].includes(category)) return 'short';
+  if (['premium', 'vip', 'premium vip', 'paid'].includes(category)) return 'premium';
+  if (category === 'all' || category === 'all videos') return 'short';
+  return category;
+}
