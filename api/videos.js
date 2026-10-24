@@ -79,7 +79,7 @@ if (!existingResponse.ok) {
         return {
           title: title || "Premium Video",
           pathname: blob.pathname,
-          category: "premium",
+          category: blob.pathname.startsWith("videos/short/") ? "short" : "premium",
           uploaded_at: blob.uploadedAt
             ? new Date(blob.uploadedAt).toISOString()
             : new Date().toISOString()
