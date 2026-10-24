@@ -17,3 +17,11 @@ ONLY HABESHA — የመጀመሪያ ማዋቀሪያ
 6) ይህ ኮድ የAdmin login ብቻ ያዘጋጃል። የክፍያ/አባላት ዳታቤዝ ወይም ቪዲዮ ማስተዳደር አያካትትም።
 
 አሁን ባለው የGitHub index.html ላይ ይህን ፕሮጀክት ሲተካ የቀድሞው ሙሉ ይዘት እንደሚቀየር ልብ በል። ከመተካት በፊት የድሮውን ኮድ በተለየ ቦታ አስቀምጥ።
+
+
+የቪዲዮ Thumbnail እና ክፍያ ገጽ:
+- በዋና ገጽ ላይ Play/Unlock ሲነካ payment.html ይከፈታል።
+- የቪዲዮ ስም እና የተመረጠው የክፍያ እቅድ ወደ payment.html ይተላለፋሉ።
+- በSupabase ውስጥ thumbnail_path ላይ የሚደረስበት HTTPS የምስል URL ካለ እውነተኛው thumbnail ይታያል፤ ካልሆነ የVIP VIDEO መለያ ያለው ናሙና ይታያል።
+- Supabase SQL Editor ውስጥ supabase-video-columns.sql አስኪድ። ይህ የ videos.pathname does not exist ስህተትን ለማስተካከል የሚያስፈልጉ አምዶችን ይጨምራል።
+- SQL ከተሰራ በኋላ Vercel ላይ Redeploy አድርግ።
