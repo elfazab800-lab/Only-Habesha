@@ -104,6 +104,13 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
   .video-thumb{height:120px}
   .language-switch button{padding:6px 8px;font-size:13px}
 }
+
+.video-player-dialog{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:16px}
+.video-player-dialog.hidden{display:none}
+.video-player-box{width:min(900px,100%);background:var(--panel);border:1px solid var(--gold);border-radius:16px;padding:14px}
+.video-player-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.video-player-box video{display:block;width:100%;max-height:72vh;background:#000;border-radius:10px}
+.video-player-close{background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:8px 12px;font-weight:700}
 </style>
 </head>
 
@@ -145,12 +152,7 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
   </div>
 
   <div class="grid" id="videoGrid">
-    <article class="video-card" data-category="short" data-sample="true">
-      <button class="video-thumb" type="button" aria-label="Open payment page" onclick="openPaymentPage('Short Video')"><span class="thumb-fallback">VIP VIDEO</span><span class="play-overlay"><span class="play-icon" aria-hidden="true">▶</span></span></button>
-      <h3 data-i18n="video1">Short Video</h3>
-      <p class="muted" data-i18n="videoDesc">Select this video to view membership plans.</p>
-      <button class="btn" onclick="openPaymentPage('Short Video')" data-i18n="unlock">UNLOCK VIDEO</button>
-    </article>
+
 
     <article class="video-card" data-category="premium" data-sample="true">
       <button class="video-thumb" type="button" aria-label="Open payment page" onclick="openPaymentPage('Premium VIP Video')"><span class="thumb-fallback">VIP VIDEO</span><span class="play-overlay"><span class="play-icon" aria-hidden="true">▶</span></span></button>
@@ -233,6 +235,17 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
   </div>
 </footer>
 
+<div class="video-player-dialog hidden" id="freeVideoDialog" role="dialog" aria-modal="true" aria-label="Free short video" onclick="if(event.target===this)closeFreeVideo()">
+  <div class="video-player-box">
+    <div class="video-player-head">
+      <strong id="freeVideoTitle">Short Video — Free</strong>
+      <button class="video-player-close" type="button" onclick="closeFreeVideo()">✕ Close</button>
+    </div>
+    <video id="freeVideoPlayer" controls playsinline preload="metadata"></video>
+    <p class="muted" id="freeVideoMessage" aria-live="polite"></p>
+  </div>
+</div>
+
 <script>
 const translations = {
 am:{
@@ -245,7 +258,7 @@ explore:'VIP ይመልከቱ ↓',
 categoriesTitle:'🎬 የቪዲዮ ምድቦች',
 categoryInfo:'ምድብ ይምረጡ፤ ከዚያ ቪዲዮ በመንካት የአባልነት እቅዶችን ይመልከቱ።',
 all:'ሁሉም ቪዲዮዎች',short:'አጫጭር ቪዲዮዎች',premium:'Premium VIP',
-video1:'አጭር ቪዲዮ',video2:'Premium VIP ቪዲዮ',video3:'ልዩ ቪዲዮ',
+video1:'አጭር ቪዲዮ',freeVideo:'በነፃ ይመልከቱ',video2:'Premium VIP ቪዲዮ',video3:'ልዩ ቪዲዮ',
 videoDesc:'የአባልነት እቅዶችን ለማየት ይህን ቪዲዮ ይምረጡ።',
 unlock:'ቪዲዮውን ክፈት',
 sampleNote:'ቪዲዮዎች እየተጫኑ ነው...',
@@ -286,7 +299,7 @@ explore:'EXPLORE VIP ↓',
 categoriesTitle:'🎬 Explore Categories',
 categoryInfo:'Choose a category, then select a video to view membership plans.',
 all:'All Videos',short:'Short Videos',premium:'Premium VIP',
-video1:'Short Video',video2:'Premium VIP Video',video3:'Exclusive Video',
+video1:'Short Video',freeVideo:'WATCH FREE',video2:'Premium VIP Video',video3:'Exclusive Video',
 videoDesc:'Select this video to view membership plans.',
 unlock:'UNLOCK VIDEO',
 sampleNote:'Loading videos...',
@@ -483,19 +496,19 @@ async function loadUploadedVideos(){
       overlay.className='play-overlay';
       overlay.innerHTML='<span class="play-icon" aria-hidden="true">▶</span>';
       thumb.appendChild(overlay);
-      thumb.addEventListener('click',()=>openPaymentPage(titleText));
+      thumb.addEventListener('click',()=>{ if(card.dataset.category==='short') playFreeVideo(video.pathname,titleText); else openPaymentPage(titleText); });
 
       const title=document.createElement('h3');
       title.textContent=titleText;
       const description=document.createElement('p');
       description.className='muted';
-      description.textContent=currentLanguage==='am'?'የVIP መዳረሻ ለማግኘት Play ይጫኑ።':'Press Play to view VIP membership plans.';
+      description.textContent=card.dataset.category==='short'?(currentLanguage==='am'?'ይህ ቪዲዮ በነፃ ይታያል።':'This video is free to watch.'):(currentLanguage==='am'?'የVIP መዳረሻ ለማግኘት Play ይጫኑ።':'Press Play to view VIP membership plans.');
 
       const button=document.createElement('button');
       button.className='btn';
       button.type='button';
-      button.textContent=translations[currentLanguage].unlock;
-      button.addEventListener('click',()=>openPaymentPage(titleText));
+      button.textContent=card.dataset.category==='short'?translations[currentLanguage].freeVideo:translations[currentLanguage].unlock;
+      button.addEventListener('click',()=>{ if(card.dataset.category==='short') playFreeVideo(video.pathname,titleText); else openPaymentPage(titleText); });
 
       card.append(thumb,title,description,button);
       grid.appendChild(card);
@@ -521,6 +534,32 @@ async function loadUploadedVideos(){
       ?'ቪዲዮዎችን ለማምጣት አልተቻለም። /api/videos እና Database ቅንብር ያረጋግጡ።'
       :'Could not load videos. Check /api/videos and database configuration.';
   }
+}
+
+function playFreeVideo(pathname,title){
+  const dialog=document.getElementById('freeVideoDialog');
+  const player=document.getElementById('freeVideoPlayer');
+  const message=document.getElementById('freeVideoMessage');
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+  document.getElementById('freeVideoTitle').textContent=title+' — '+translations[currentLanguage].freeVideo;
+  message.textContent=currentLanguage==='am'?'ቪዲዮው በመጫን ላይ ነው…':'Loading video…';
+  player.src='/api/video-play?pathname='+encodeURIComponent(pathname);
+  player.onerror=()=>{message.textContent=currentLanguage==='am'?'ቪዲዮውን ማጫወት አልተቻለም። የVercel Blob እና Supabase ቅንብር ያረጋግጡ።':'Could not play this video. Check Vercel Blob and Supabase configuration.';};
+  player.onloadedmetadata=()=>{message.textContent='';};
+  dialog.classList.remove('hidden');
+  player.load();
+  player.play().catch(()=>{});
+}
+
+function closeFreeVideo(){
+  const dialog=document.getElementById('freeVideoDialog');
+  const player=document.getElementById('freeVideoPlayer');
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+  dialog.classList.add('hidden');
 }
 
 function openPaymentPage(videoName){
