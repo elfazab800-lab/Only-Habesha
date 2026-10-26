@@ -56,7 +56,7 @@ module.exports = async function handler(req, res) {
 
 if (
   !video ||
-  String(video.category || '').toLowerCase() !== 'short'
+  String(video.category || '').trim().toLowerCase() !== 'short videos'
 ) {
       return res.status(403).json({
         error: 'This video is not available for free playback'
