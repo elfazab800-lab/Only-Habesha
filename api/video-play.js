@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
 
   if (
     !pathname ||
-    !pathname.startsWith('videos/') ||
+    pathname.startsWith('/') ||
     pathname.includes('..') ||
     pathname.includes('\\')
   ) {
@@ -47,18 +47,14 @@ module.exports = async function handler(req, res) {
     });
 
     if (!dbResponse.ok) {
-      console.error(
-        'Video lookup failed:',
-        dbResponse.status,
-        await dbResponse.text()
-      );
+      console.error('Video lookup failed:', dbResponse.status);
       return res.status(502).json({ error: 'Could not verify video' });
     }
 
     const rows = await dbResponse.json();
     const video = rows[0];
 
-    if (!video || video.pathname !== pathname || video.category !== 'short') {
+    if (!video || video.category !== 'short') {
       return res.status(403).json({
         error: 'This video is not available for free playback'
       });
@@ -67,7 +63,8 @@ module.exports = async function handler(req, res) {
     const videoUrl =
       typeof video.video_url === 'string' ? video.video_url : '';
 
-    const expectedPrefix = baseUrl + '/storage/v1/object/public/videos/';
+    const expectedPrefix =
+      baseUrl + '/storage/v1/object/public/videos/';
 
     if (!videoUrl.startsWith(expectedPrefix)) {
       return res.status(404).json({
@@ -78,7 +75,9 @@ module.exports = async function handler(req, res) {
     const videoResponse = await fetch(videoUrl);
 
     if (!videoResponse.ok || !videoResponse.body) {
-      return res.status(502).json({ error: 'Could not retrieve video file' });
+      return res.status(502).json({
+        error: 'Could not retrieve video file'
+      });
     }
 
     res.statusCode = 200;
