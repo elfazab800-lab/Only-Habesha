@@ -4,9 +4,7 @@ res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
 if (req.method !== 'GET') {
 res.setHeader('Allow', 'GET');
-return res.status(405).json({
-error: 'GET method required'
-});
+return res.status(405).json({ error: 'GET method required' });
 }
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -15,12 +13,9 @@ process.env.SUPABASE_SECRET_KEY ||
 process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-console.error('Supabase environment variables are missing.');
-
 return res.status(500).json({
-  error: 'Supabase server configuration is missing.'
+error: 'Supabase server configuration is missing.'
 });
-
 }
 
 try {
@@ -31,7 +26,6 @@ queryUrl.searchParams.set(
   'select',
   'id,title,description,category,pathname,storage_path,video_url,thumbnail_path,created_at,is_published,mime_type,original_filename'
 );
-
 queryUrl.searchParams.set('is_published', 'eq.true');
 queryUrl.searchParams.set('order', 'created_at.desc');
 
@@ -45,12 +39,10 @@ const response = await fetch(queryUrl.toString(), {
 });
 
 if (!response.ok) {
-  const details = await response.text();
-
   console.error(
-    'Supabase videos query failed:',
+    'Supabase query failed:',
     response.status,
-    details
+    await response.text()
   );
 
   return res.status(502).json({
@@ -81,9 +73,7 @@ const videos = rows
     return Boolean(video.pathname);
   });
 
-return res.status(200).json({
-  videos: videos
-});
+return res.status(200).json({ videos });
 
 } catch (error) {
 console.error('Videos API error:', error);
@@ -96,20 +86,16 @@ return res.status(500).json({
 };
 
 function normalizeCategory(value) {
-const category = String(value || 'short')
-.trim()
-.toLowerCase();
+const category = String(value || 'short').trim().toLowerCase();
 
 if (
-['short', 'short video', 'short videos', 'free', 'free video']
-.includes(category)
+['short', 'short video', 'short videos', 'free', 'free video'].includes(category)
 ) {
 return 'short';
 }
 
 if (
-['premium', 'vip', 'premium vip', 'paid']
-.includes(category)
+['premium', 'vip', 'premium vip', 'paid'].includes(category)
 ) {
 return 'premium';
 }
