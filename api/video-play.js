@@ -54,7 +54,10 @@ module.exports = async function handler(req, res) {
     const rows = await dbResponse.json();
     const video = rows[0];
 
-    if (!video || video.category !== 'short') {
+if (
+  !video ||
+  String(video.category || '').toLowerCase() !== 'short'
+) {
       return res.status(403).json({
         error: 'This video is not available for free playback'
       });
