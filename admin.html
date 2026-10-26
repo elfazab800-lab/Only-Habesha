@@ -1,47 +1,44 @@
-
 <!doctype html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Only Habesha Admin</title>
-
-<style>
+<title>Only Habesha Admin</title><style>
+*{box-sizing:border-box}
 body{
   margin:0;
   background:#120d18;
   color:#fff8ef;
   font-family:system-ui,sans-serif;
   min-height:100vh;
-  display:grid;
-  place-items:center;
   padding:20px;
-  box-sizing:border-box
 }
 .box{
-  width:min(430px,100%);
+  width:min(520px,100%);
+  margin:20px auto;
   background:#211729;
   border:1px solid #4b3856;
   border-radius:16px;
   padding:24px;
-  box-sizing:border-box
 }
 h1{color:#e8bd62}
 h2{font-size:20px}
 .muted{color:#c9bdcf}
 label{
   display:block;
-  margin:14px 0 6px
+  margin:14px 0 6px;
 }
-input{
+input,textarea,select{
   width:100%;
-  box-sizing:border-box;
   padding:12px;
   border-radius:8px;
   border:1px solid #4b3856;
   background:#130e18;
-  color:white
+  color:white;
+  font:inherit;
 }
+textarea{min-height:100px;resize:vertical}
 button{
   background:#e8bd62;
   color:#1b1220;
@@ -51,122 +48,119 @@ button{
   font-weight:800;
   width:100%;
   margin-top:16px;
-  cursor:pointer
+  cursor:pointer;
 }
-button:disabled{
-  opacity:.6;
-  cursor:wait
-}
+button:disabled{opacity:.6;cursor:wait}
 .status{
   color:#e8bd62;
   min-height:24px;
-  overflow-wrap:anywhere
+  overflow-wrap:anywhere;
+  white-space:pre-wrap;
 }
 hr{
   border:0;
   border-top:1px solid #4b3856;
-  margin:22px 0
+  margin:22px 0;
 }
+.checkrow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:18px;
+}
+.checkrow input{width:auto}
+.checkrow label{margin:0}
+.note{font-size:13px;line-height:1.6}
 [hidden]{display:none!important}
-</style>
-</head>
-
-<body>
-<main class="box">
-
-<h1>Only Habesha Admin</h1>
-<p class="muted">Authorized administrators only.</p>
-
-<form id="login">
+</style></head><body>
+<main class="box"><h1>Only Habesha Admin</h1>
+<p class="muted">Authorized administrators only.</p><form id="login">
   <label for="password">Admin Password</label>
-  <input
-    id="password"
-    type="password"
-    autocomplete="current-password"
-    required
-  >
-  <button type="submit">Login</button>
-</form>
+  <input id="password" type="password"
+    autocomplete="current-password" required>
+  <button id="loginButton" type="submit">Login</button>
+</form><p class="status" id="status" aria-live="polite"></p><section id="inside" hidden>  <h2>Upload Video</h2>
+  <p class="muted">Add video details and choose its category.</p>  <form id="videoForm"><label for="title">Video Title *</label>
+<input id="title" type="text" maxlength="200"
+  placeholder="Enter video title" required>
 
-<p class="status" id="status" aria-live="polite"></p>
+<label for="description">Description</label>
+<textarea id="description" maxlength="5000"
+  placeholder="Write a description"></textarea>
 
-<div id="inside" hidden>
+<label for="category">Video Category *</label>
+<select id="category" required>
+  <option value="short">Short Videos — Free</option>
+  <option value="premium">Premium / VIP — Paid</option>
+</select>
 
-  <h2>Welcome</h2>
-  <p class="muted">Admin Panel — Video Upload</p>
+<label for="thumbnail">Thumbnail Image URL</label>
+<input id="thumbnail" type="url"
+  placeholder="https://example.com/image.jpg">
+<p class="muted note">
+  Enter a publicly accessible image URL. Leave blank if you do not have one.
+</p>
 
-  <hr>
+<label for="video">Choose Video File *</label>
+<input id="video" type="file" accept="video/*" required>
 
-  <h2>Upload Video</h2>
-
-  <label for="video">Choose a video from your phone</label>
-  <input
-    id="video"
-    type="file"
-    accept="video/*"
-  >
-
-  <button id="upload" type="button">Upload Video</button>
-
-  <p class="status" id="uploadStatus" aria-live="polite"></p>
-
-  <hr>
-
-  <p class="muted">
-    Videos are stored in Private Blob storage. Publishing videos on the
-    website and granting VIP members permission to watch them must be
-    configured separately.
-  </p>
-
-  <button id="logout" type="button">Logout</button>
-
+<div class="checkrow">
+  <input id="publish" type="checkbox" checked>
+  <label for="publish">Publish this video on the website</label>
 </div>
-</main>
 
-<script type="module">
+<button id="upload" type="submit">Upload & Save Video</button>
+
+  </form>  <p class="status" id="uploadStatus" aria-live="polite"></p>  <hr>  <p class="muted note">
+    Short Videos are intended to be free to watch.
+    Premium / VIP videos must be protected by server-side access checks
+    and linked to your payment system before paid viewing is enabled.
+  </p><button id="logout" type="button">Logout</button>
+
+</section>
+</main><script type="module">
 import { upload } from "https://esm.sh/@vercel/blob@2.6.1/client";
 
-const form = document.getElementById("login");
+const loginForm = document.getElementById("login");
+const loginButton = document.getElementById("loginButton");
 const statusEl = document.getElementById("status");
 const inside = document.getElementById("inside");
-const videoInput = document.getElementById("video");
+const videoForm = document.getElementById("videoForm");
 const uploadButton = document.getElementById("upload");
 const uploadStatus = document.getElementById("uploadStatus");
 
 function showAdmin() {
-  form.hidden = true;
+  loginForm.hidden = true;
   inside.hidden = false;
+  statusEl.textContent = "";
 }
 
-async function check() {
+async function checkSession() {
   try {
     const response = await fetch("/api/admin-session", {
       credentials: "same-origin",
       cache: "no-store"
     });
 
-    const data = await response.json();
-
-    if (response.ok && data.authenticated) {
-      showAdmin();
+    if (response.ok) {
+      const data = await response.json();
+      if (data.authenticated) showAdmin();
     }
   } catch (error) {
     console.error("Session check failed:", error);
   }
 }
 
-form.addEventListener("submit", async (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-
+  loginButton.disabled = true;
   statusEl.textContent = "Checking login...";
 
   try {
     const response = await fetch("/api/admin-login", {
       method: "POST",
       credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         password: document.getElementById("password").value
       })
@@ -179,20 +173,28 @@ form.addEventListener("submit", async (event) => {
     }
 
     document.getElementById("password").value = "";
-    statusEl.textContent = "";
     showAdmin();
 
   } catch (error) {
-    statusEl.textContent = error.message || "An error occurred.";
+    statusEl.textContent = error.message || "Login failed.";
     document.getElementById("password").value = "";
+  } finally {
+    loginButton.disabled = false;
   }
 });
 
-uploadButton.addEventListener("click", async () => {
-  const file = videoInput.files && videoInput.files[0];
+videoForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const file = document.getElementById("video").files[0];
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const category = document.getElementById("category").value;
+  const thumbnail = document.getElementById("thumbnail").value.trim();
+  const isPublished = document.getElementById("publish").checked;
 
   if (!file) {
-    uploadStatus.textContent = "Please select a video first.";
+    uploadStatus.textContent = "Please select a video file.";
     return;
   }
 
@@ -201,8 +203,18 @@ uploadButton.addEventListener("click", async () => {
     return;
   }
 
+  if (!title) {
+    uploadStatus.textContent = "Please enter a video title.";
+    return;
+  }
+
+  if (file.size > 500 * 1024 * 1024) {
+    uploadStatus.textContent = "Video must be 500 MB or smaller.";
+    return;
+  }
+
   uploadButton.disabled = true;
-  uploadStatus.textContent = "Uploading video. Please wait...";
+  uploadStatus.textContent = "Starting upload...";
 
   try {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -213,27 +225,55 @@ uploadButton.addEventListener("click", async () => {
       {
         access: "private",
         handleUploadUrl: "/api/video-upload",
-
         onUploadProgress: (event) => {
           uploadStatus.textContent =
-            "Upload progress: " +
-            Math.round(event.percentage) +
-            "%";
+            "Uploading video: " +
+            Math.round(event.percentage) + "%";
         }
       }
     );
 
     uploadStatus.textContent =
-      "Upload successful! File path: " + result.pathname;
+      "Upload complete. Saving video details...";
 
-    videoInput.value = "";
+    const saveResponse = await fetch("/api/admin-video-save", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        title,
+        description,
+        category,
+        pathname: result.pathname,
+        original_filename: file.name,
+        mime_type: file.type,
+        size_bytes: file.size,
+        thumbnail_path: thumbnail,
+        is_published: isPublished
+      })
+    });
+
+    const saveData = await saveResponse.json();
+
+    if (!saveResponse.ok) {
+      throw new Error(
+        saveData.error || "Video uploaded, but its details could not be saved."
+      );
+    }
+
+    uploadStatus.textContent =
+      "Success! Video uploaded and details saved.\n" +
+      "Category: " +
+      (category === "short" ? "Short Videos — Free" : "Premium / VIP") +
+      "\nPublished: " + (isPublished ? "Yes" : "No");
+
+    videoForm.reset();
+    document.getElementById("publish").checked = true;
 
   } catch (error) {
+    console.error("Video upload/save error:", error);
     uploadStatus.textContent =
-      "Upload failed. Please check your admin login and Blob configuration.";
-
-    console.error("Video upload error:", error);
-
+      "Error: " + (error.message || "Upload failed. Check your settings and try again.");
   } finally {
     uploadButton.disabled = false;
   }
@@ -252,7 +292,6 @@ document.getElementById("logout").addEventListener("click", async () => {
   }
 });
 
-check();
-</script>
-</body>
+checkSession();
+</script></body>
 </html>
