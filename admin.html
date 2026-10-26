@@ -1,124 +1,151 @@
 <!doctype html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Only Habesha Admin</title><style>
+<title>Only Habesha Admin</title>
+
+<style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:#120d18;
-  color:#fff8ef;
-  font-family:system-ui,sans-serif;
-  min-height:100vh;
-  padding:20px;
+  margin:0;background:#120d18;color:#fff8ef;
+  font-family:system-ui,sans-serif;min-height:100vh;padding:20px
 }
 .box{
-  width:min(520px,100%);
-  margin:20px auto;
-  background:#211729;
-  border:1px solid #4b3856;
-  border-radius:16px;
-  padding:24px;
+  width:min(720px,100%);margin:20px auto;background:#211729;
+  border:1px solid #4b3856;border-radius:16px;padding:24px
 }
-h1{color:#e8bd62}
+h1,h2{color:#e8bd62}
 h2{font-size:20px}
+h3{margin:0 0 8px;font-size:17px;overflow-wrap:anywhere}
 .muted{color:#c9bdcf}
-label{
-  display:block;
-  margin:14px 0 6px;
-}
+label{display:block;margin:14px 0 6px}
 input,textarea,select{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #4b3856;
-  background:#130e18;
-  color:white;
-  font:inherit;
+  width:100%;padding:12px;border-radius:8px;
+  border:1px solid #4b3856;background:#130e18;
+  color:white;font:inherit
 }
-textarea{min-height:100px;resize:vertical}
+textarea{min-height:90px;resize:vertical}
 button{
-  background:#e8bd62;
-  color:#1b1220;
-  border:0;
-  border-radius:8px;
-  padding:12px 16px;
-  font-weight:800;
-  width:100%;
-  margin-top:16px;
-  cursor:pointer;
+  background:#e8bd62;color:#1b1220;border:0;border-radius:8px;
+  padding:12px 16px;font-weight:800;width:100%;
+  margin-top:12px;cursor:pointer
 }
 button:disabled{opacity:.6;cursor:wait}
+button.secondary{background:#493750;color:#fff8ef}
+button.danger{background:#b93848;color:white}
 .status{
-  color:#e8bd62;
-  min-height:24px;
-  overflow-wrap:anywhere;
-  white-space:pre-wrap;
+  color:#e8bd62;min-height:24px;overflow-wrap:anywhere;
+  white-space:pre-wrap
 }
-hr{
-  border:0;
-  border-top:1px solid #4b3856;
-  margin:22px 0;
-}
-.checkrow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:18px;
-}
+hr{border:0;border-top:1px solid #4b3856;margin:22px 0}
+.checkrow{display:flex;align-items:center;gap:10px;margin-top:18px}
 .checkrow input{width:auto}
 .checkrow label{margin:0}
 .note{font-size:13px;line-height:1.6}
 [hidden]{display:none!important}
-</style></head><body>
-<main class="box"><h1>Only Habesha Admin</h1>
-<p class="muted">Authorized administrators only.</p><form id="login">
-  <label for="password">Admin Password</label>
-  <input id="password" type="password"
-    autocomplete="current-password" required>
-  <button id="loginButton" type="submit">Login</button>
-</form><p class="status" id="status" aria-live="polite"></p><section id="inside" hidden>  <h2>Upload Video</h2>
-  <p class="muted">Add video details and choose its category.</p>  <form id="videoForm"><label for="title">Video Title *</label>
-<input id="title" type="text" maxlength="200"
-  placeholder="Enter video title" required>
+.video-card{
+  border:1px solid #4b3856;border-radius:12px;
+  padding:16px;margin:16px 0;background:#180f20
+}
+.video-card img{
+  width:100%;max-height:220px;object-fit:contain;
+  background:#0d0910;border-radius:8px;margin-bottom:12px
+}
+.video-meta{font-size:13px;color:#c9bdcf;overflow-wrap:anywhere}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions button{flex:1;min-width:110px}
+.pill{
+  display:inline-block;padding:4px 9px;border-radius:20px;
+  background:#493750;font-size:12px;margin-bottom:10px
+}
+@media(max-width:480px){
+  body{padding:10px}
+  .box{padding:16px}
+  .actions{display:block}
+  .actions button{width:100%}
+}
+</style>
+</head>
 
-<label for="description">Description</label>
-<textarea id="description" maxlength="5000"
-  placeholder="Write a description"></textarea>
+<body>
+<main class="box">
+  <h1>Only Habesha Admin</h1>
+  <p class="muted">Authorized administrators only.</p>
 
-<label for="category">Video Category *</label>
-<select id="category" required>
-  <option value="short">Short Videos — Free</option>
-  <option value="premium">Premium / VIP — Paid</option>
-</select>
+  <form id="login">
+    <label for="password">Admin Password</label>
+    <input id="password" type="password"
+      autocomplete="current-password" required>
+    <button id="loginButton" type="submit">Login</button>
+  </form>
 
-<label for="thumbnail">Thumbnail Image URL</label>
-<input id="thumbnail" type="url"
-  placeholder="https://example.com/image.jpg">
-<p class="muted note">
-  Enter a publicly accessible image URL. Leave blank if you do not have one.
-</p>
+  <p class="status" id="status" aria-live="polite"></p>
 
-<label for="video">Choose Video File *</label>
-<input id="video" type="file" accept="video/*" required>
+  <section id="inside" hidden>
+    <h2>Upload Video</h2>
+    <p class="muted">Add video details and choose its category.</p>
 
-<div class="checkrow">
-  <input id="publish" type="checkbox" checked>
-  <label for="publish">Publish this video on the website</label>
-</div>
+    <form id="videoForm">
+      <label for="title">Video Title *</label>
+      <input id="title" type="text" maxlength="200"
+        placeholder="Enter video title" required>
 
-<button id="upload" type="submit">Upload & Save Video</button>
+      <label for="description">Description</label>
+      <textarea id="description" maxlength="5000"
+        placeholder="Write a description"></textarea>
 
-  </form>  <p class="status" id="uploadStatus" aria-live="polite"></p>  <hr>  <p class="muted note">
-    Short Videos are intended to be free to watch.
-    Premium / VIP videos must be protected by server-side access checks
-    and linked to your payment system before paid viewing is enabled.
-  </p><button id="logout" type="button">Logout</button>
+      <label for="category">Video Category *</label>
+      <select id="category" required>
+        <option value="short">Short Videos — Free</option>
+        <option value="premium">Premium / VIP — Paid</option>
+      </select>
 
-</section>
-</main><script type="module">
+      <label for="thumbnail">Thumbnail Image URL</label>
+      <input id="thumbnail" type="url"
+        placeholder="https://example.com/image.jpg">
+      <p class="muted note">
+        Enter a publicly accessible image URL. Leave blank if you do not have one.
+      </p>
+
+      <label for="video">Choose Video File *</label>
+      <input id="video" type="file" accept="video/*" required>
+
+      <div class="checkrow">
+        <input id="publish" type="checkbox" checked>
+        <label for="publish">Publish this video on the website</label>
+      </div>
+
+      <button id="upload" type="submit">Upload &amp; Save Video</button>
+    </form>
+
+    <p class="status" id="uploadStatus" aria-live="polite"></p>
+
+    <hr>
+
+    <h2>Manage Videos</h2>
+    <p class="muted note">
+      View uploaded videos, edit their details, change publication status,
+      or delete a video record.
+    </p>
+
+    <button id="refreshVideos" type="button" class="secondary">
+      Refresh Video List
+    </button>
+    <p class="status" id="listStatus" aria-live="polite"></p>
+    <div id="videoList"></div>
+
+    <hr>
+    <p class="muted note">
+      Short Videos are intended to be free to watch.
+      Premium / VIP videos require server-side access protection before
+      paid viewing is enabled.
+    </p>
+    <button id="logout" type="button" class="secondary">Logout</button>
+  </section>
+</main>
+
+<script type="module">
 import { upload } from "https://esm.sh/@vercel/blob@2.6.1/client";
 
 const loginForm = document.getElementById("login");
@@ -128,11 +155,26 @@ const inside = document.getElementById("inside");
 const videoForm = document.getElementById("videoForm");
 const uploadButton = document.getElementById("upload");
 const uploadStatus = document.getElementById("uploadStatus");
+const listStatus = document.getElementById("listStatus");
+const videoList = document.getElementById("videoList");
+const refreshButton = document.getElementById("refreshVideos");
+
+let videos = [];
+let listRequestNumber = 0;
 
 function showAdmin() {
   loginForm.hidden = true;
   inside.hidden = false;
   statusEl.textContent = "";
+  loadVideos();
+}
+
+async function readJson(response) {
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || "Request failed.");
+  }
+  return data;
 }
 
 async function checkSession() {
@@ -166,15 +208,9 @@ loginForm.addEventListener("submit", async (event) => {
       })
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Login failed.");
-    }
-
+    await readJson(response);
     document.getElementById("password").value = "";
     showAdmin();
-
   } catch (error) {
     statusEl.textContent = error.message || "Login failed.";
     document.getElementById("password").value = "";
@@ -227,8 +263,7 @@ videoForm.addEventListener("submit", async (event) => {
         handleUploadUrl: "/api/video-upload",
         onUploadProgress: (event) => {
           uploadStatus.textContent =
-            "Uploading video: " +
-            Math.round(event.percentage) + "%";
+            "Uploading video: " + Math.round(event.percentage) + "%";
         }
       }
     );
@@ -253,13 +288,7 @@ videoForm.addEventListener("submit", async (event) => {
       })
     });
 
-    const saveData = await saveResponse.json();
-
-    if (!saveResponse.ok) {
-      throw new Error(
-        saveData.error || "Video uploaded, but its details could not be saved."
-      );
-    }
+    await readJson(saveResponse);
 
     uploadStatus.textContent =
       "Success! Video uploaded and details saved.\n" +
@@ -269,7 +298,7 @@ videoForm.addEventListener("submit", async (event) => {
 
     videoForm.reset();
     document.getElementById("publish").checked = true;
-
+    await loadVideos();
   } catch (error) {
     console.error("Video upload/save error:", error);
     uploadStatus.textContent =
@@ -278,6 +307,218 @@ videoForm.addEventListener("submit", async (event) => {
     uploadButton.disabled = false;
   }
 });
+
+async function loadVideos() {
+  const requestNumber = ++listRequestNumber;
+  refreshButton.disabled = true;
+  listStatus.textContent = "Loading videos...";
+  videoList.replaceChildren();
+
+  try {
+    const response = await fetch("/api/admin-videos-list", {
+      method: "GET",
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    const data = await readJson(response);
+
+    if (requestNumber !== listRequestNumber) return;
+
+    videos = Array.isArray(data.videos) ? data.videos : [];
+    renderVideos();
+    listStatus.textContent = videos.length
+      ? "Loaded " + videos.length + " video(s)."
+      : "No videos found.";
+  } catch (error) {
+    if (requestNumber === listRequestNumber) {
+      listStatus.textContent =
+        "Could not load videos: " + (error.message || "Please try again.");
+    }
+  } finally {
+    if (requestNumber === listRequestNumber) {
+      refreshButton.disabled = false;
+    }
+  }
+}
+
+function makeElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function renderVideos() {
+  videoList.replaceChildren();
+
+  if (!videos.length) {
+    videoList.append(
+      makeElement("p", "muted", "No videos found in the database.")
+    );
+    return;
+  }
+
+  for (const video of videos) {
+    const card = makeElement("article", "video-card");
+    const heading = makeElement("h3", "", video.title || "Untitled video");
+    const badge = makeElement(
+      "span",
+      "pill",
+      (video.category === "premium" ? "Premium / VIP" : "Short / Free") +
+      " · " + (video.is_published ? "Published" : "Unpublished")
+    );
+
+    card.append(badge, heading);
+
+    if (video.thumbnail_path && /^https?:\/\//i.test(video.thumbnail_path)) {
+      const image = document.createElement("img");
+      image.src = video.thumbnail_path;
+      image.alt = "Video thumbnail";
+      image.loading = "lazy";
+      image.onerror = () => image.remove();
+      card.append(image);
+    }
+
+    const idText = makeElement("p", "video-meta", "ID: " + String(video.id));
+    card.append(idText);
+
+    const titleLabel = makeElement("label", "", "Video Title");
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.maxLength = 200;
+    titleInput.required = true;
+    titleInput.value = video.title || "";
+    titleLabel.append(titleInput);
+    card.append(titleLabel);
+
+    const descriptionLabel = makeElement("label", "", "Description");
+    const descriptionInput = document.createElement("textarea");
+    descriptionInput.maxLength = 5000;
+    descriptionInput.value = video.description || "";
+    descriptionLabel.append(descriptionInput);
+    card.append(descriptionLabel);
+
+    const categoryLabel = makeElement("label", "", "Category");
+    const categorySelect = document.createElement("select");
+
+    for (const optionData of [
+      ["short", "Short Videos — Free"],
+      ["premium", "Premium / VIP — Paid"]
+    ]) {
+      const option = document.createElement("option");
+      option.value = optionData[0];
+      option.textContent = optionData[1];
+      categorySelect.append(option);
+    }
+
+    categorySelect.value = video.category === "premium" ? "premium" : "short";
+    categoryLabel.append(categorySelect);
+    card.append(categoryLabel);
+
+    const thumbnailLabel = makeElement("label", "", "Thumbnail Image URL");
+    const thumbnailInput = document.createElement("input");
+    thumbnailInput.type = "url";
+    thumbnailInput.placeholder = "https://example.com/image.jpg";
+    thumbnailInput.value = video.thumbnail_path || "";
+    thumbnailLabel.append(thumbnailInput);
+    card.append(thumbnailLabel);
+
+    const publishedRow = makeElement("div", "checkrow");
+    const publishedInput = document.createElement("input");
+    publishedInput.type = "checkbox";
+    publishedInput.checked = video.is_published === true;
+    const publishedLabel = makeElement("label", "", "Published on website");
+    publishedLabel.htmlFor = "published-" + String(video.id);
+    publishedInput.id = publishedLabel.htmlFor;
+    publishedRow.append(publishedInput, publishedLabel);
+    card.append(publishedRow);
+
+    const actions = makeElement("div", "actions");
+    const saveButton = makeElement("button", "", "Save Changes");
+    saveButton.type = "button";
+
+    const deleteButton = makeElement("button", "danger", "Delete Record");
+    deleteButton.type = "button";
+
+    actions.append(saveButton, deleteButton);
+    card.append(actions);
+
+    saveButton.addEventListener("click", async () => {
+      const title = titleInput.value.trim();
+      const description = descriptionInput.value.trim();
+      const thumbnail = thumbnailInput.value.trim();
+
+      if (!title) {
+        listStatus.textContent = "Video title is required.";
+        titleInput.focus();
+        return;
+      }
+
+      saveButton.disabled = true;
+      listStatus.textContent = "Saving changes...";
+
+      try {
+        const response = await fetch("/api/admin-video-update", {
+          method: "PATCH",
+          credentials: "same-origin",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            id: video.id,
+            title,
+            description,
+            category: categorySelect.value,
+            thumbnail_path: thumbnail,
+            is_published: publishedInput.checked
+          })
+        });
+
+        await readJson(response);
+        listStatus.textContent = "Video updated successfully.";
+        await loadVideos();
+      } catch (error) {
+        listStatus.textContent =
+          "Update failed: " + (error.message || "Please try again.");
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+
+    deleteButton.addEventListener("click", async () => {
+      const confirmed = confirm(
+        "Delete the database record for \"" +
+        (video.title || "this video") +
+        "\"?\n\nThe stored video file will NOT be deleted by this action."
+      );
+
+      if (!confirmed) return;
+
+      deleteButton.disabled = true;
+      listStatus.textContent = "Deleting video record...";
+
+      try {
+        const response = await fetch("/api/admin-video-delete", {
+          method: "DELETE",
+          credentials: "same-origin",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({id: video.id})
+        });
+
+        await readJson(response);
+        listStatus.textContent = "Video record deleted.";
+        await loadVideos();
+      } catch (error) {
+        listStatus.textContent =
+          "Delete failed: " + (error.message || "Please try again.");
+        deleteButton.disabled = false;
+      }
+    });
+
+    videoList.append(card);
+  }
+}
+
+refreshButton.addEventListener("click", loadVideos);
 
 document.getElementById("logout").addEventListener("click", async () => {
   try {
@@ -293,5 +534,6 @@ document.getElementById("logout").addEventListener("click", async () => {
 });
 
 checkSession();
-</script></body>
+</script>
+</body>
 </html>
