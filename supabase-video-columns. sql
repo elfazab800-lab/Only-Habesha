@@ -1,0 +1,23 @@
+ALTER TABLE public.videos
+  ADD COLUMN IF NOT EXISTS pathname text,
+  ADD COLUMN IF NOT EXISTS storage_path text,
+  ADD COLUMN IF NOT EXISTS video_url text,
+  ADD COLUMN IF NOT EXISTS thumbnail_path text,
+  ADD COLUMN IF NOT EXISTS title text,
+  ADD COLUMN IF NOT EXISTS description text,
+  ADD COLUMN IF NOT EXISTS category text DEFAULT 'short',
+  ADD COLUMN IF NOT EXISTS is_published boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS mime_type text,
+  ADD COLUMN IF NOT EXISTS original_filename text,
+  ADD COLUMN IF NOT EXISTS size_bytes bigint;
+
+UPDATE public.videos
+SET pathname = COALESCE(pathname, storage_path, video_url)
+WHERE pathname IS NULL;
+
+UPDATE public.videos
+SET is_published = false
+WHERE is_published IS NULL;
+
+CREATE INDEX IF NOT EXISTS videos_created_at_idx
+ON public.videos (created_at DESC);
