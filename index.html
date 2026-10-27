@@ -156,6 +156,12 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 .video-player-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .video-player-box video{display:block;width:100%;max-height:72vh;background:#000;border-radius:10px}
 .video-player-close{background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:8px 12px;font-weight:700}
+
+/* Cleaner video cards: hide explanatory text and the video-count status. */
+.video-card > p.muted,
+#videoStatus {
+  display: none !important;
+}
 </style>
 </head>
 
