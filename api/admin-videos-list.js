@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
 
     queryUrl.searchParams.set(
       'select',
-      'id,title,description,category,pathname,storage_path,video_url,thumbnail_path,created_at,is_published,mime_type,original_filename'
+      'id,title,description,category,pathname,storage_path,video_url,thumbnail_path,duration,created_at,is_published,mime_type,original_filename'
     );
 
     queryUrl.searchParams.set('order', 'created_at.desc');
