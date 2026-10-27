@@ -36,6 +36,7 @@ module.exports = async function handler(req, res) {
     'description',
     'category',
     'thumbnail_path',
+    'duration',
     'is_published'
   ];
 
@@ -75,6 +76,13 @@ module.exports = async function handler(req, res) {
     typeof update.thumbnail_path !== 'string'
   ) {
     return res.status(400).json({ error: 'Invalid thumbnail path.' });
+  }
+
+  if ('duration' in update) {
+    if (typeof update.duration !== 'string') {
+      return res.status(400).json({ error: 'Invalid duration.' });
+    }
+    update.duration = update.duration.trim().slice(0, 20) || null;
   }
 
   if (
