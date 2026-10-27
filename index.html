@@ -45,6 +45,10 @@ button{font:inherit}
   border-radius:18px;padding:22px;margin:20px 0
 }
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+/* Responsive video gallery: 3 columns on desktop and 2 on mobile. */
+#videoGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+#videoGrid .video-card{padding:clamp(9px,1.5vw,17px)}
+#videoGrid .video-thumb{width:100%;min-width:0}
 .btn{
   display:inline-block;background:var(--gold);color:#1b1220;text-decoration:none;
   border:0;border-radius:10px;padding:12px 17px;font-weight:800;
@@ -125,11 +129,25 @@ button{font:inherit}
 .status{min-height:22px;color:var(--gold)}
 footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13px}
 hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+@media(max-width:700px){
+  #videoGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #videoGrid .video-card{padding:10px}
+  #videoGrid .video-thumb{height:auto;aspect-ratio:4/3;min-height:0}
+  #videoGrid .video-thumb .play-icon{width:42px;height:42px;font-size:21px}
+  #videoGrid .video-card h3{font-size:clamp(13px,3.4vw,18px)}
+  #videoGrid .video-card p{font-size:clamp(12px,3vw,15px);line-height:1.45}
+  #videoGrid .video-card .btn{padding:10px 6px;font-size:clamp(11px,2.8vw,14px)}
+}
 @media(max-width:520px){
   .hero{padding-top:75px}
   .panel{padding:17px}
   .video-thumb{height:120px}
   .language-switch button{padding:6px 8px;font-size:13px}
+}
+@media(max-width:340px){
+  #videoGrid{grid-template-columns:minmax(0,1fr)}
+  #videoGrid .video-card{padding:12px}
+  #videoGrid .video-thumb{aspect-ratio:16/9}
 }
 
 .video-player-dialog{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:16px}
