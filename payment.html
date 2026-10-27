@@ -1,9 +1,235 @@
+
 <!doctype html>
-<html lang="am"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#120d18"><title>REAL HABESHA SECRET — Choose Plan</title>
-<style>:root{--bg:#120d18;--panel:#211729;--gold:#e8bd62;--text:#fff8ef;--muted:#c9bdcf;--line:#4b3856}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#33203c,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Ethiopic",sans-serif;line-height:1.6}.wrap{width:min(760px,92%);margin:auto}.hero{text-align:center;padding:44px 0 18px}.badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:5px 13px;border-radius:99px;font-size:13px}.panel{background:rgba(33,23,41,.92);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}.gold,.price{color:var(--gold)}.price{font-size:28px;font-weight:800}.muted{color:var(--muted)}.btn{display:inline-block;background:var(--gold);color:#1b1220;text-decoration:none;border:0;border-radius:10px;padding:12px 17px;font-weight:800;cursor:pointer;font-size:15px;text-align:center}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.plan{display:flex;flex-direction:column;gap:8px;align-items:center;min-height:150px;justify-content:center}.language-switch{position:absolute;top:14px;right:4%;display:flex;gap:6px}.language-switch button{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}.language-switch button.active{background:var(--gold);color:#1b1220}footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}</style></head><body>
-<div class="language-switch"><button id="langAm" onclick="setLanguage('am')">አማርኛ</button><button id="langEn" onclick="setLanguage('en')">English</button></div>
-<header class="hero"><div class="wrap"><span class="badge">REAL HABESHA SECRET</span><h1>ONLY <span class="gold">HABESHA</span></h1><p class="muted" data-am="የVIP አባልነት ፕላን ይምረጡ" data-en="Choose your VIP membership plan">የVIP አባልነት ፕላን ይምረጡ</p></div></header>
-<main class="wrap"><a href="index.html" class="btn secondary" data-am="← ወደ መነሻ ተመለስ" data-en="← Back to home">← ወደ መነሻ ተመለስ</a>
-<section class="panel"><p class="muted" id="selectedVideoLine" hidden><span data-am="ለመክፈት የመረጡት ቪዲዮ:" data-en="Video you selected:">ለመክፈት የመረጡት ቪዲዮ:</span> <strong id="selectedVideoName"></strong></p><h2 data-am="የአባልነት ጊዜ ይምረጡ" data-en="Select membership duration">የአባልነት ጊዜ ይምረጡ</h2><p class="muted" data-am="ፕላን ከመረጡ በኋላ ወደ Telebirr ክፍያ ገጽ ይወሰዳሉ። እዚያ ቁጥሩን ኮፒ ማድረግ ይችላሉ።" data-en="After choosing a plan, you will go to the Telebirr payment page where you can copy the payment number.">ፕላን ከመረጡ በኋላ ወደ Telebirr ክፍያ ገጽ ይወሰዳሉ። እዚያ ቁጥሩን ኮፒ ማድረግ ይችላሉ።</p>
-<div class="plan-grid"><a class="btn secondary plan" data-plan="1-month" href="#"><strong data-am="1 ወር VIP" data-en="1 Month VIP">1 ወር VIP</strong><span class="price">990 <span data-am="ብር" data-en="ETB">ብር</span></span><span data-am="ፕላኑን ይምረጡ →" data-en="Choose plan →">ፕላኑን ይምረጡ →</span></a><a class="btn secondary plan" data-plan="6-months" href="#"><strong data-am="6 ወር VIP" data-en="6 Months VIP">6 ወር VIP</strong><span class="price">1,990 <span data-am="ብር" data-en="ETB">ብር</span></span><span data-am="ፕላኑን ይምረጡ →" data-en="Choose plan →">ፕላኑን ይምረጡ →</span></a><a class="btn secondary plan" data-plan="2-years" href="#"><strong data-am="2 ዓመት VIP" data-en="2 Years VIP">2 ዓመት VIP</strong><span class="price">4,990 <span data-am="ብር" data-en="ETB">ብር</span></span><span data-am="ፕላኑን ይምረጡ →" data-en="Choose plan →">ፕላኑን ይምረጡ →</span></a></div></section></main><footer>ONLY HABESHA · REAL HABESHA SECRET</footer>
-<script>const params=new URLSearchParams(location.search);const selectedVideo=params.get('video');if(selectedVideo){document.getElementById('selectedVideoLine').hidden=false;document.getElementById('selectedVideoName').textContent=selectedVideo.slice(0,160)}let language=localStorage.getItem('onlyHabeshaLanguage')||'am';function setLanguage(lang){language=lang;localStorage.setItem('onlyHabeshaLanguage',lang);document.documentElement.lang=lang;document.querySelectorAll('[data-am][data-en]').forEach(el=>el.textContent=el.dataset[lang]);document.getElementById('langAm').classList.toggle('active',lang==='am');document.getElementById('langEn').classList.toggle('active',lang==='en')}document.querySelectorAll('.plan').forEach(a=>{const plan=a.dataset.plan;const target='telebirr.html?plan='+encodeURIComponent(plan)+(selectedVideo?'&video='+encodeURIComponent(selectedVideo):'');a.setAttribute('href',target);a.addEventListener('click',function(event){event.preventDefault();window.location.assign(target);});});setLanguage(language);</script></body></html>
+<html lang="am">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Only Habesha | Premium Membership</title>
+<style>
+:root {
+  --bg: #080808;
+  --panel: #141414;
+  --yellow: #ffd32a;
+  --white: #ffffff;
+  --muted: #bdbdbd;
+  --line: #353535;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--white);
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+.wrap { width: min(1000px, 92%); margin: auto; }
+.hero { text-align: center; padding: 65px 0 30px; }
+.badge {
+  display: inline-block;
+  background: var(--yellow);
+  color: #000;
+  padding: 6px 15px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 12px;
+}
+h1 { font-size: clamp(30px, 6vw, 48px); margin: 18px 0 8px; }
+h1 span, .price { color: var(--yellow); }
+.muted { color: var(--muted); }
+.language-switch {
+  position: absolute;
+  top: 14px;
+  right: 4%;
+  display: flex;
+  gap: 6px;
+}
+.language-switch button {
+  padding: 7px 10px;
+  border: 1px solid var(--yellow);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+}
+.language-switch button.active {
+  background: var(--yellow);
+  color: #000;
+}
+.back {
+  display: inline-block;
+  color: var(--white);
+  border: 1px solid var(--line);
+  padding: 9px 14px;
+  border-radius: 7px;
+  text-decoration: none;
+}
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  margin: 25px 0 45px;
+}
+.plan {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+.plan.featured { border: 2px solid var(--yellow); }
+.plan h2 { margin: 8px 0 0; }
+.price { font-size: 34px; font-weight: 900; margin: 12px 0; }
+.price small { color: var(--white); font-size: 14px; }
+ul {
+  text-align: left;
+  padding-left: 22px;
+  min-height: 145px;
+  width: 100%;
+}
+li { margin: 8px 0; }
+li::marker { color: var(--yellow); }
+.btn {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--yellow);
+  color: #000;
+  border: 1px solid var(--yellow);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 900;
+  cursor: pointer;
+}
+.btn.secondary {
+  background: transparent;
+  color: var(--white);
+}
+.ribbon {
+  background: var(--yellow);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 900;
+}
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 28px 10px;
+  border-top: 1px solid var(--line);
+}
+@media(max-width: 520px) {
+  .hero { padding-top: 75px; }
+  .plan-grid { grid-template-columns: 1fr; }
+  ul { min-height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="language-switch">
+  <button id="langAm" onclick="setLanguage('am')">አማርኛ</button>
+  <button id="langEn" onclick="setLanguage('en')">English</button>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge">PREMIUM VIP MEMBERSHIP</span>
+    <h1>ONLY <span>HABESHA</span></h1>
+    <p class="muted"
+       data-am="የሚፈልጉትን የVIP አባልነት ፕላን ይምረጡ"
+       data-en="Choose the VIP membership plan that works for you">
+       የሚፈልጉትን የVIP አባልነት ፕላን ይምረጡ
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a href="index.html" class="back"
+     data-am="← ወደ መነሻ ተመለስ"
+     data-en="← Back to home">← ወደ መነሻ ተመለስ</a>
+
+  <section class="plan-grid">
+    <article class="plan">
+      <h2 data-am="Monthly VIP" data-en="Monthly VIP">Monthly VIP</h2>
+      <div class="price">1,500 <small>ETB</small></div>
+      <p class="muted" data-am="ለአንድ ወር" data-en="One month">
+        ለአንድ ወር
+      </p>
+      <ul>
+        <li data-am="HD የቪዲዮ ጥራት" data-en="HD video quality">HD የቪዲዮ ጥራት</li>
+        <li data-am="የVIP ቪዲዮዎች መዳረሻ" data-en="Access to VIP videos">የVIP ቪዲዮዎች መዳረሻ</li>
+        <li data-am="ማስታወቂያ የሌለው እይታ" data-en="Ad-free viewing">ማስታወቂያ የሌለው እይታ</li>
+      </ul>
+      <a class="btn secondary plan-link" data-plan="1-month" href="telebirr.html?plan=1-month"
+         data-am="ፕላኑን ይምረጡ" data-en="Choose Plan">ፕላኑን ይምረጡ</a>
+    </article>
+
+    <article class="plan featured">
+      <span class="ribbon" data-am="ተመራጭ" data-en="POPULAR">ተመራጭ</span>
+      <h2 data-am="Annual VIP" data-en="Annual VIP">Annual VIP</h2>
+      <div class="price">2,990 <small>ETB</small></div>
+      <p class="muted" data-am="ለአንድ ዓመት" data-en="One year">
+        ለአንድ ዓመት
+      </p>
+      <ul>
+        <li data-am="ከወርሃዊ ፕላን የበለጠ ቁጠባ" data-en="More savings">ከወርሃዊ ፕላን የበለጠ ቁጠባ</li>
+        <li data-am="የVIP ቪዲዮዎች መዳረሻ" data-en="Access to VIP videos">የVIP ቪዲዮዎች መዳረሻ</li>
+        <li data-am="ማስታወቂያ የሌለው እይታ" data-en="Ad-free viewing">ማስታወቂያ የሌለው እይታ</li>
+        <li data-am="ቀድሞ የአዳዲስ ቪዲዮዎች መዳረሻ" data-en="Early access to new videos">ቀድሞ የአዳዲስ ቪዲዮዎች መዳረሻ</li>
+      </ul>
+      <a class="btn plan-link" data-plan="6-months" href="telebirr.html?plan=6-months"
+         data-am="ፕላኑን ይምረጡ" data-en="Choose Plan">ፕላኑን ይምረጡ</a>
+    </article>
+
+    <article class="plan">
+      <h2 data-am="Lifetime VIP" data-en="Lifetime VIP">Lifetime VIP</h2>
+      <div class="price">5,990 <small>ETB</small></div>
+      <p class="muted" data-am="አንድ ጊዜ ብቻ ክፍያ" data-en="One-time payment">
+        አንድ ጊዜ ብቻ ክፍያ
+      </p>
+      <ul>
+        <li data-am="4K Ultra HD ጥራት" data-en="4K Ultra HD quality">4K Ultra HD ጥራት</li>
+        <li data-am="ያልተገደበ መዳረሻ" data-en="Unlimited access">ያልተገደበ መዳረሻ</li>
+        <li data-am="የVIP ድጋፍ" data-en="VIP support">የVIP ድጋፍ</li>
+        <li data-am="ማስታወቂያ የሌለው እይታ" data-en="Ad-free viewing">ማስታወቂያ የሌለው እይታ</li>
+        <li data-am="የወደፊት ዝመናዎች" data-en="Future updates">የወደፊት ዝመናዎች</li>
+      </ul>
+      <a class="btn secondary plan-link" data-plan="2-years" href="telebirr.html?plan=2-years"
+         data-am="ፕላኑን ይምረጡ" data-en="Choose Plan">ፕላኑን ይምረጡ</a>
+    </article>
+  </section>
+</main>
+
+<footer>ONLY HABESHA · PREMIUM VIP</footer>
+
+<script>
+function setLanguage(lang) {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-am][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+  document.getElementById('langAm').classList.toggle('active', lang === 'am');
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  try { localStorage.setItem('onlyHabeshaLanguage', lang); } catch(e) {}
+}
+let savedLang = 'am';
+try { savedLang = localStorage.getItem('onlyHabeshaLanguage') || 'am'; } catch(e) {}
+setLanguage(savedLang);
+
+const params = new URLSearchParams(location.search);
+const selectedVideo = params.get('video');
+if (selectedVideo) {
+  document.querySelectorAll('.plan-link').forEach(link => {
+    const plan = link.dataset.plan;
+    link.href = 'telebirr.html?plan=' + encodeURIComponent(plan) +
+      '&video=' + encodeURIComponent(selectedVideo);
+  });
+}
+</script>
+</body>
+</html>
