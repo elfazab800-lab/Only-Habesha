@@ -89,6 +89,17 @@ button{font:inherit}
 .video-thumb:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .video-thumb img + .play-overlay{pointer-events:none}
 .video-thumb .thumb-fallback{width:100%;height:100%;display:grid;place-items:center;background:radial-gradient(circle at 25% 20%,#66416f,#17101e 72%);font-size:28px;color:var(--gold);letter-spacing:.12em;font-weight:800}
+/* Distinct category covers: free Shorts use purple; Premium VIP uses gold/black. */
+.video-card[data-category="short"]{border-color:#705080}
+.video-card[data-category="short"] .video-thumb{background:linear-gradient(135deg,#4a2c61,#17101e);border-color:#9b72bb;color:#e3c6ff}
+.video-card[data-category="short"] .thumb-fallback{background:radial-gradient(circle at 25% 20%,#765093,#17101e 72%);color:#e3c6ff}
+.video-card[data-category="premium"]{border-color:#a77a2a;background:linear-gradient(160deg,#241b13,#1b1322 72%)}
+.video-card[data-category="premium"] .video-thumb{background:linear-gradient(135deg,#71521b,#21170b 72%);border-color:#e8bd62;color:#ffd76a;box-shadow:inset 0 0 0 1px #e8bd6240}
+.video-card[data-category="premium"] .thumb-fallback{background:radial-gradient(circle at 25% 20%,#8b6827,#17100e 72%);color:#ffd76a}
+.video-card[data-category="premium"] .play-icon{background:rgba(232,189,98,.98)}
+.video-thumb video{width:100%;height:100%;object-fit:cover;display:block;background:#120d18}
+.video-thumb .preview-label{position:absolute;left:8px;bottom:8px;padding:3px 7px;border-radius:6px;background:#120d18cc;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em}
+
 .video-card h3,.plan h3{margin:5px 0;overflow-wrap:anywhere}
 .video-card .btn{width:100%;margin-top:8px}
 .price{font-size:clamp(25px,5vw,30px);color:var(--gold);font-weight:800}
@@ -149,7 +160,7 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 <main class="wrap">
 <section class="panel" id="categories">
   <h2 data-i18n="categoriesTitle">🎬 Explore Categories</h2>
-  <p class="muted" data-i18n="categoryInfo">Choose a category and select a video to view membership plans.</p>
+  <p class="muted" data-i18n="categoryInfo">Choose a category. Videos with preview clips play muted automatically.</p>
 
   <div class="categories">
     <button class="category active" data-cat="all" onclick="filterVideos('all',this)" data-i18n="all">All Videos</button>
@@ -262,7 +273,7 @@ welcome:'🔥 ወደ ONLY HABESHA VIP እንኳን በደህና መጡ! 👑',
 intro:'ለVIP አባላት ብቻ የተዘጋጁ የHabesha ቪዲዮዎችን፣ አዳዲስ ፕሪሚየም ይዘቶችን እና የግል የፎቶ ስብስቦችን ይክፈቱ። 🔞✨',
 explore:'VIP ይመልከቱ ↓',
 categoriesTitle:'🎬 የቪዲዮ ምድቦች',
-categoryInfo:'ምድብ ይምረጡ፤ ከዚያ ቪዲዮ በመንካት የአባልነት እቅዶችን ይመልከቱ።',
+categoryInfo:'ምድብ ይምረጡ። Preview ያላቸው ቪዲዮዎች ያለ ድምፅ በራስ-ሰር ይንቀሳቀሳሉ።',
 all:'ሁሉም ቪዲዮዎች',short:'አጫጭር ቪዲዮዎች',premium:'Premium VIP',
 video1:'አጭር ቪዲዮ',freeVideo:'በነፃ ይመልከቱ',video2:'Premium VIP ቪዲዮ',video3:'ልዩ ቪዲዮ',
 videoDesc:'የአባልነት እቅዶችን ለማየት ይህን ቪዲዮ ይምረጡ።',
@@ -472,8 +483,33 @@ async function loadUploadedVideos(){
       thumb.type='button';
       thumb.setAttribute('aria-label',(currentLanguage==='am'?'ክፍያ ገጽ ክፈት: ':'Open payment page: ')+titleText);
 
-      // If the database has a usable thumbnail URL, show the real image.
-      // Otherwise use a branded fallback instead of trying to play private video.
+      // Auto-play only an explicitly supplied preview URL. For Premium VIP, this
+      // must be a short/preview-only URL from the API, never the full private video.
+      const previewUrl=typeof video.preview_url==='string' && /^https?:\/\//i.test(video.preview_url)
+        ? video.preview_url : '';
+      if(previewUrl){
+        const preview=document.createElement('video');
+        preview.src=previewUrl;
+        preview.muted=true;
+        preview.defaultMuted=true;
+        preview.autoplay=true;
+        preview.loop=true;
+        preview.playsInline=true;
+        preview.setAttribute('playsinline','');
+        preview.setAttribute('muted','');
+        preview.preload='metadata';
+        preview.setAttribute('aria-label',titleText+' muted preview');
+        thumb.appendChild(preview);
+        // Autoplay can be restricted by the browser or device.
+        const tryPlay=()=>preview.play().catch(()=>{});
+        thumb.addEventListener('pointerenter',tryPlay,{passive:true});
+        setTimeout(tryPlay,0);
+        const label=document.createElement('span');
+        label.className='preview-label';
+        label.textContent=currentLanguage==='am'?'ዝም ያለ Preview':'MUTED PREVIEW';
+        thumb.appendChild(label);
+      } else {
+      // Use the thumbnail image, or a branded category-colored fallback.
       const imageUrl=typeof video.thumbnail_path==='string' && /^https?:\/\//i.test(video.thumbnail_path)
         ? video.thumbnail_path : '';
       if(imageUrl){
@@ -496,6 +532,7 @@ async function loadUploadedVideos(){
         fallback.className='thumb-fallback';
         fallback.textContent='VIP VIDEO';
         thumb.appendChild(fallback);
+      }
       }
 
       const overlay=document.createElement('span');
