@@ -65,6 +65,11 @@ module.exports = async function handler(req, res) {
       ? body.thumbnail_path.trim()
       : '';
 
+  const duration =
+    typeof body.duration === 'string'
+      ? body.duration.trim().slice(0, 20)
+      : '';
+
   const isPublished = body.is_published === true;
 
   if (!title || !pathname) {
@@ -106,6 +111,7 @@ module.exports = async function handler(req, res) {
     storage_path: pathname,
     video_url: '',
     thumbnail_path: thumbnailPath || null,
+    duration: duration || null,
     original_filename: originalFilename || null,
     mime_type: mimeType || null,
     size_bytes: sizeBytes,
