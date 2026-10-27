@@ -29,7 +29,7 @@ const queryUrl = new URL(baseUrl + '/rest/v1/videos');
 
 queryUrl.searchParams.set(
   'select',
-  'id,title,description,category,pathname,storage_path,video_url,thumbnail_path,created_at,is_published,mime_type,original_filename'
+  'id,title,description,category,pathname,storage_path,video_url,thumbnail_path,duration,created_at,is_published,mime_type,original_filename'
 );
 
 queryUrl.searchParams.set('is_published', 'eq.true');
@@ -78,6 +78,7 @@ const videos = rows
       videoUrl: row.video_url || '',
       storage_path: row.storage_path || '',
       thumbnail_path: row.thumbnail_path || '',
+      duration: row.duration || '',
       category: category,
       uploadedAt: row.created_at || null,
       is_published: row.is_published === true,
