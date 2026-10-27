@@ -1,9 +1,211 @@
+
 <!doctype html>
-<html lang="am"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#120d18"><title>REAL HABESHA SECRET — Telebirr Payment</title>
-<style>:root{--bg:#120d18;--panel:#211729;--gold:#e8bd62;--text:#fff8ef;--muted:#c9bdcf;--line:#4b3856}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#33203c,var(--bg) 55%);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Ethiopic",sans-serif;line-height:1.6}.wrap{width:min(700px,92%);margin:auto}.hero{text-align:center;padding:42px 0 16px}.badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:5px 13px;border-radius:99px;font-size:13px}.panel{background:rgba(33,23,41,.94);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}.gold,.price,.number{color:var(--gold)}.price{font-size:29px;font-weight:800}.number{font-size:30px;font-weight:850;letter-spacing:1.5px}.muted{color:var(--muted)}.btn{display:inline-block;background:var(--gold);color:#1b1220;text-decoration:none;border:0;border-radius:10px;padding:12px 17px;font-weight:800;cursor:pointer;font-size:15px;text-align:center}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}.notice{background:#30231a;border:1px solid #77572a;padding:12px;border-radius:10px;color:#ffe5ac;margin:16px 0}.language-switch{position:absolute;top:14px;right:4%;display:flex;gap:6px}.language-switch button{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}.language-switch button.active{background:var(--gold);color:#1b1220}footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.actions .btn{flex:1;min-width:190px}</style></head><body>
-<div class="language-switch"><button id="langAm" onclick="setLanguage('am')">አማርኛ</button><button id="langEn" onclick="setLanguage('en')">English</button></div>
-<header class="hero"><div class="wrap"><span class="badge">REAL HABESHA SECRET</span><h1>ONLY <span class="gold">HABESHA</span></h1><p class="muted" data-am="Telebirr ክፍያ" data-en="Telebirr payment">Telebirr ክፍያ</p></div></header>
-<main class="wrap"><a id="backToPlans" href="payment.html" class="btn secondary" data-am="← ወደ ፕላኖች ተመለስ" data-en="← Back to plans">← ወደ ፕላኖች ተመለስ</a>
-<section class="panel"><p class="muted" id="selectedVideoLine" hidden><span data-am="የመረጡት ቪዲዮ:" data-en="Selected video:">የመረጡት ቪዲዮ:</span> <strong id="selectedVideoName"></strong></p><h2 data-am="የክፍያ ዝርዝር" data-en="Payment details">የክፍያ ዝርዝር</h2><p data-am="የመረጡት ፕላን:" data-en="Selected plan:">የመረጡት ፕላን:</p><h3 id="planName">1 ወር VIP</h3><div class="price"><span id="planPrice">990</span> <span data-am="ብር" data-en="ETB">ብር</span></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><p data-am="የተቀባይ ስም:" data-en="Recipient name:">የተቀባይ ስም:</p><strong>Elias Ali</strong><p data-am="የTelebirr ቁጥር:" data-en="Telebirr number:">የTelebirr ቁጥር:</p><div class="number" id="telebirrNumber">0985975112</div><button class="btn" id="copyButton" onclick="copyNumber()" data-am="ቁጥሩን ኮፒ አድርግ" data-en="Copy Telebirr number">ቁጥሩን ኮፒ አድርግ</button><p id="copyStatus" class="muted" aria-live="polite"></p><div class="notice" data-am="ከመክፈልዎ በፊት የተቀባዩን ስምና የክፍያ መጠን ያረጋግጡ። ትክክለኛውን መጠን ይክፈሉ እና ደረሰኙን ይያዙ።" data-en="Before paying, verify the recipient name and exact amount. Keep your receipt.">ከመክፈልዎ በፊት የተቀባዩን ስምና የክፍያ መጠን ያረጋግጡ። ደረሰኙን ይያዙ።</div></section>
-<section class="panel"><h2 data-am="ከከፈሉ በኋላ" data-en="After you pay">ከከፈሉ በኋላ</h2><ol><li data-am="በTelebirr ወደ ላይ ያለው ቁጥር የተመረጠውን መጠን ይላኩ።" data-en="Pay the selected amount to the Telebirr number above.">በTelebirr ወደ ላይ ያለው ቁጥር የተመረጠውን መጠን ይላኩ።</li><li data-am="የTelegram ቦቱን ከፍተው ደረሰኝዎን እና የፕላን ስም ይላኩ።" data-en="Open the Telegram bot and send your receipt and plan name.">የTelegram ቦቱን ከፍተው ደረሰኝዎን እና የፕላን ስም ይላኩ።</li><li data-am="Admin ክፍያውን በእጅ እስኪያረጋግጥ ይጠብቁ።" data-en="Wait for the admin to manually verify the payment.">Admin ክፍያውን በእጅ እስኪያረጋግጥ ይጠብቁ።</li></ol><div class="actions"><a class="btn" href="https://t.me/OnlyhabeshanpaymantBot" target="_blank" rel="noopener noreferrer" data-am="Telegram ክፍያ ቦት ክፈት" data-en="Open Telegram payment bot">Telegram ክፍያ ቦት ክፈት</a><a href="payment.html" id="chooseAnother" class="btn secondary" data-am="ሌላ ፕላን ይምረጡ" data-en="Choose another plan">ሌላ ፕላን ይምረጡ</a></div></section></main><footer>ONLY HABESHA · REAL HABESHA SECRET</footer>
-<script>const plans={'1-month':{am:'1 ወር VIP',en:'1 Month VIP',price:990},'6-months':{am:'6 ወር VIP',en:'6 Months VIP',price:1990},'2-years':{am:'2 ዓመት VIP',en:'2 Years VIP',price:4990}};const params=new URLSearchParams(location.search);const selected=plans[params.get('plan')]||plans['1-month'];const selectedVideo=params.get('video');if(selectedVideo){document.getElementById('selectedVideoLine').hidden=false;document.getElementById('selectedVideoName').textContent=selectedVideo.slice(0,160)}document.getElementById('planPrice').textContent=selected.price.toLocaleString('en-US');document.getElementById('backToPlans').href='payment.html'+(selectedVideo?'?video='+encodeURIComponent(selectedVideo):'');document.getElementById('chooseAnother').href='payment.html'+(selectedVideo?'?video='+encodeURIComponent(selectedVideo):'');let language=localStorage.getItem('onlyHabeshaLanguage')||'am';function setLanguage(lang){language=lang;localStorage.setItem('onlyHabeshaLanguage',lang);document.documentElement.lang=lang;document.querySelectorAll('[data-am][data-en]').forEach(el=>el.textContent=el.dataset[lang]);document.getElementById('langAm').classList.toggle('active',lang==='am');document.getElementById('langEn').classList.toggle('active',lang==='en');document.getElementById('planName').textContent=selected[lang]}async function copyNumber(){const number='0985975112';try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(number)}else{const input=document.createElement('textarea');input.value=number;input.style.position='fixed';input.style.opacity='0';document.body.appendChild(input);input.select();const ok=document.execCommand('copy');input.remove();if(!ok)throw new Error('Copy failed')}document.getElementById('copyStatus').textContent=language==='am'?'ቁጥሩ ተኮፒ ተደርጓል። አሁን Telebirr ክፈት።':'Number copied. Open Telebirr now.';document.getElementById('copyButton').textContent=language==='am'?'ተኮፒ ተደርጓል ✓':'Copied ✓'}catch(e){document.getElementById('copyStatus').textContent=language==='am'?'ቁጥሩን በእጅ ይቅዱ: 0985975112':'Copy the number manually: 0985975112'}}setLanguage(language);</script></body></html>
+<html lang="am">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Only Habesha | Telebirr Payment</title>
+<style>
+:root{--bg:#080808;--panel:#141414;--yellow:#ffd32a;--white:#fff;--muted:#bdbdbd;--line:#353535}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--white);font-family:system-ui,sans-serif;line-height:1.7}
+.wrap{width:min(700px,92%);margin:auto}
+.hero{text-align:center;padding:65px 0 22px}
+.badge{display:inline-block;background:var(--yellow);color:#000;padding:5px 13px;border-radius:6px;font-size:12px;font-weight:900}
+h1{font-size:clamp(30px,6vw,42px);margin:14px 0}
+.gold,.price,.number{color:var(--yellow)}
+.muted{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:22px;margin:20px 0}
+.price{font-size:36px;font-weight:900}
+.number{font-size:clamp(25px,6vw,32px);font-weight:900;letter-spacing:1px;overflow-wrap:anywhere}
+.btn{display:inline-block;background:var(--yellow);color:#000;text-decoration:none;border:1px solid var(--yellow);border-radius:8px;padding:12px 16px;font-weight:850;cursor:pointer;font-size:15px;text-align:center}
+.secondary{background:transparent;color:var(--white);border-color:var(--line)}
+.notice{background:#211e12;border:1px solid #69551a;padding:13px;border-radius:9px;margin:16px 0}
+.language-switch{position:absolute;top:12px;right:4%;display:flex;gap:6px}
+.language-switch button{background:transparent;color:var(--white);border:1px solid var(--yellow);border-radius:7px;padding:7px 10px;cursor:pointer}
+.language-switch button.active{background:var(--yellow);color:#000}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.actions .btn{flex:1;min-width:180px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+footer{text-align:center;color:var(--muted);padding:25px 10px;border-top:1px solid var(--line);margin-top:30px;font-size:13px}
+@media(max-width:480px){.panel{padding:17px}.hero{padding-top:75px}.actions .btn{width:100%}}
+</style>
+</head>
+<body>
+
+<div class="language-switch">
+<button id="langAm" onclick="setLanguage('am')">አማርኛ</button>
+<button id="langEn" onclick="setLanguage('en')">English</button>
+</div>
+
+<header class="hero">
+<div class="wrap">
+<span class="badge">PREMIUM VIP</span>
+<h1>ONLY <span class="gold">HABESHA</span></h1>
+<p class="muted" data-am="የTelebirr ክፍያ መመሪያ" data-en="Telebirr Payment Instructions">የTelebirr ክፍያ መመሪያ</p>
+</div>
+</header>
+
+<main class="wrap">
+
+<a id="backToPlans" href="payment.html" class="btn secondary"
+data-am="← ወደ ፕላኖች ተመለስ" data-en="← Back to plans">← ወደ ፕላኖች ተመለስ</a>
+
+<section class="panel">
+<p id="selectedVideoLine" class="muted" hidden>
+<span data-am="የመረጡት ቪዲዮ:" data-en="Selected video:">የመረጡት ቪዲዮ:</span>
+<strong id="selectedVideoName"></strong>
+</p>
+
+<h2 data-am="የክፍያ ዝርዝር" data-en="Payment Details">የክፍያ ዝርዝር</h2>
+<p data-am="የመረጡት ፕላን:" data-en="Your selected plan:">የመረጡት ፕላን:</p>
+<h3 id="planName">Monthly VIP</h3>
+
+<div class="price"><span id="planPrice">1,500</span> <small data-am="ብር" data-en="ETB">ብር</small></div>
+
+<hr>
+
+<p data-am="የተቀባይ ስም:" data-en="Recipient name:">የተቀባይ ስም:</p>
+<strong>Elias Ali</strong>
+
+<p data-am="የTelebirr ቁጥር:" data-en="Telebirr number:">የTelebirr ቁጥር:</p>
+<div class="number" id="telebirrNumber">0985975112</div>
+
+<p>
+<button class="btn" id="copyButton" onclick="copyNumber()"
+data-am="ቁጥሩን ኮፒ አድርግ" data-en="Copy Telebirr Number">ቁጥሩን ኮፒ አድርግ</button>
+</p>
+<p id="copyStatus" class="muted" aria-live="polite"></p>
+
+<div class="notice"
+data-am="ከመክፈልዎ በፊት የተቀባዩን ስምና የክፍያ መጠን ያረጋግጡ። ትክክለኛውን መጠን ይክፈሉ እና ደረሰኙን ይያዙ።"
+data-en="Before paying, verify the recipient name and exact amount. Pay the correct amount and keep your receipt.">
+ከመክፈልዎ በፊት የተቀባዩን ስምና የክፍያ መጠን ያረጋግጡ። ደረሰኙን ይያዙ።
+</div>
+</section>
+
+<section class="panel">
+<h2 data-am="ከከፈሉ በኋላ" data-en="After You Pay">ከከፈሉ በኋላ</h2>
+<ol>
+<li data-am="በTelebirr ወደ ላይ ያለው ቁጥር ትክክለኛውን የክፍያ መጠን ይላኩ።"
+data-en="Send the exact payment amount to the Telebirr number above.">በTelebirr ወደ ላይ ያለው ቁጥር ትክክለኛውን መጠን ይላኩ።</li>
+<li data-am="የTelegram ክፍያ ቦቱን ከፍተው ደረሰኙንና የመረጡትን ፕላን ይላኩ።"
+data-en="Open the Telegram payment bot and send your receipt and selected plan.">የTelegram ክፍያ ቦቱን ከፍተው ደረሰኙንና የመረጡትን ፕላን ይላኩ።</li>
+<li data-am="Admin ክፍያውን በእጅ እስኪያረጋግጥ ይጠብቁ።"
+data-en="Wait for the admin to manually verify your payment.">Admin ክፍያውን በእጅ እስኪያረጋግጥ ይጠብቁ።</li>
+<li data-am="ክፍያው ከተረጋገጠ በኋላ የVIP መዳረሻ ያገኛሉ።"
+data-en="You will receive VIP access after payment is verified.">ክፍያው ከተረጋገጠ በኋላ የVIP መዳረሻ ያገኛሉ።</li>
+</ol>
+
+<div class="actions">
+<a class="btn" href="https://t.me/OnlyhabeshanpaymantBot"
+target="_blank" rel="noopener noreferrer"
+data-am="Telegram ክፍያ ቦት ክፈት" data-en="Open Telegram Payment Bot">Telegram ክፍያ ቦት ክፈት</a>
+<a href="payment.html" id="chooseAnother" class="btn secondary"
+data-am="ሌላ ፕላን ይምረጡ" data-en="Choose Another Plan">ሌላ ፕላን ይምረጡ</a>
+</div>
+</section>
+</main>
+
+<footer>ONLY HABESHA · PREMIUM VIP</footer>
+
+<script>
+const plans = {
+  '1-month': {
+    am: 'Monthly VIP · 1 ወር',
+    en: 'Monthly VIP · 1 Month',
+    price: 1500
+  },
+  '6-months': {
+    am: 'Annual VIP · 1 ዓመት',
+    en: 'Annual VIP · 1 Year',
+    price: 2990
+  },
+  '2-years': {
+    am: 'Lifetime VIP · የዘላለም መዳረሻ',
+    en: 'Lifetime VIP · Lifetime Access',
+    price: 5990
+  }
+};
+
+const params = new URLSearchParams(location.search);
+const selected = plans[params.get('plan')] || plans['1-month'];
+const selectedVideo = params.get('video');
+
+if (selectedVideo) {
+  document.getElementById('selectedVideoLine').hidden = false;
+  document.getElementById('selectedVideoName').textContent =
+    selectedVideo.slice(0, 160);
+}
+
+document.getElementById('planPrice').textContent =
+  selected.price.toLocaleString('en-US');
+
+const returnUrl = 'payment.html' +
+  (selectedVideo ? '?video=' + encodeURIComponent(selectedVideo) : '');
+
+document.getElementById('backToPlans').href = returnUrl;
+document.getElementById('chooseAnother').href = returnUrl;
+
+let language = 'am';
+try {
+  language = localStorage.getItem('onlyHabeshaLanguage') || 'am';
+} catch (e) {}
+
+function setLanguage(lang) {
+  language = lang;
+  try {
+    localStorage.setItem('onlyHabeshaLanguage', lang);
+  } catch (e) {}
+
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-am][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+
+  document.getElementById('langAm').classList.toggle('active', lang === 'am');
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  document.getElementById('planName').textContent = selected[lang];
+}
+
+async function copyNumber() {
+  const number = '0985975112';
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(number);
+    } else {
+      const input = document.createElement('textarea');
+      input.value = number;
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.select();
+
+      const copied = document.execCommand('copy');
+      input.remove();
+
+      if (!copied) throw new Error('Copy failed');
+    }
+
+    document.getElementById('copyStatus').textContent =
+      language === 'am'
+        ? 'ቁጥሩ ተኮፒ ተደርጓል።'
+        : 'Number copied successfully.';
+
+    document.getElementById('copyButton').textContent =
+      language === 'am' ? 'ተኮፒ ተደርጓል ✓' : 'Copied ✓';
+  } catch (e) {
+    document.getElementById('copyStatus').textContent =
+      language === 'am'
+        ? 'ቁጥሩን በእጅ ኮፒ ያድርጉ: ' + number
+        : 'Copy the number manually: ' + number;
+  }
+}
+
+setLanguage(language);
+</script>
+</body>
+</html>
