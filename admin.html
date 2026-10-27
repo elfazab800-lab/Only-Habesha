@@ -101,6 +101,12 @@ hr{border:0;border-top:1px solid #4b3856;margin:22px 0}
         <option value="premium">Premium / VIP — Paid</option>
       </select>
 
+      <label for="duration">Video Duration (shown on Premium thumbnail)</label>
+      <input id="duration" type="text" maxlength="20"
+        placeholder="e.g. 12:35 or 1:05:20"
+        inputmode="numeric">
+      <p class="muted note">Enter the duration manually. It will appear at the top-right of Premium video thumbnails.</p>
+
       <label for="thumbnail">Thumbnail Image URL</label>
       <input id="thumbnail" type="url"
         placeholder="https://example.com/image.jpg">
@@ -226,6 +232,7 @@ videoForm.addEventListener("submit", async (event) => {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
   const category = document.getElementById("category").value;
+  const duration = document.getElementById("duration").value.trim();
   const thumbnail = document.getElementById("thumbnail").value.trim();
   const isPublished = document.getElementById("publish").checked;
 
@@ -279,6 +286,7 @@ videoForm.addEventListener("submit", async (event) => {
         title,
         description,
         category,
+        duration,
         pathname: result.pathname,
         original_filename: file.name,
         mime_type: file.type,
@@ -416,6 +424,15 @@ function renderVideos() {
     categoryLabel.append(categorySelect);
     card.append(categoryLabel);
 
+    const durationLabel = makeElement("label", "", "Video Duration");
+    const durationInput = document.createElement("input");
+    durationInput.type = "text";
+    durationInput.maxLength = 20;
+    durationInput.placeholder = "e.g. 12:35 or 1:05:20";
+    durationInput.value = video.duration || "";
+    durationLabel.append(durationInput);
+    card.append(durationLabel);
+
     const thumbnailLabel = makeElement("label", "", "Thumbnail Image URL");
     const thumbnailInput = document.createElement("input");
     thumbnailInput.type = "url";
@@ -468,6 +485,7 @@ function renderVideos() {
             title,
             description,
             category: categorySelect.value,
+            duration: durationInput.value.trim(),
             thumbnail_path: thumbnail,
             is_published: publishedInput.checked
           })
