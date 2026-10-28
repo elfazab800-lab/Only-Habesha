@@ -56,7 +56,17 @@ a{color:var(--gold)}button{font:inherit}.wrap{width:min(1050px,92%);margin:auto}
 <section class="panel" id="categories"><h2 data-i18n="categoriesTitle">🎬 Explore Categories</h2><p class="muted" data-i18n="categoryInfo">Short Videos are free. Premium VIP videos are shown separately below.</p>
 <div class="categories"><button class="category active" data-cat="all" onclick="filterVideos('all',this)" data-i18n="all">All Videos</button><button class="category" data-cat="short" onclick="filterVideos('short',this)" data-i18n="short">Short Videos</button><button class="category" data-cat="premium" onclick="filterVideos('premium',this)" data-i18n="premium">Premium VIP</button></div>
 <div id="videoGrid">
-<section class="video-section" id="shortSection"><div class="section-head"><div><h3 data-i18n="shortHeading">▶ Short Videos</h3><p class="section-note" data-i18n="shortNote">Free to watch · 6 videos per page</p></div></div><div class="video-grid" id="shortVideoGrid"></div><div class="empty-category hidden" id="shortEmpty" data-i18n="shortEmpty">No Short Videos uploaded yet.</div><div class="pager" id="shortPager"><button class="btn secondary" id="shortPrev" type="button" onclick="changePage('short',-1)" data-i18n="previous">← Previous</button><span class="page-status" id="shortPageStatus">Page 1 of 1</span><button class="btn secondary" id="shortNext" type="button" onclick="changePage('short',1)" data-i18n="next">Next →</button></div></section>
+<section class="video-section" id="shortSection"><div class="section-head"><div><h3 data-i18n="shortHeading">▶ Short Videos</h3><p class="section-note" data-i18n="shortNote">Free to watch · 6 videos per page</p></div></div><div id="inlineShortPlayer" class="hidden" style="margin-bottom:16px">
+  <video id="inlineShortVideo"
+    controls
+    playsinline
+    preload="metadata"
+    style="width:100%;max-height:70vh;object-fit:contain;background:#000;border-radius:12px">
+  </video>
+  <h3 id="inlineShortTitle" style="margin:8px 0 16px"></h3>
+  <button class="btn secondary" type="button"
+    onclick="closeInlineShortVideo()">Close Video</button>
+</div><div class="video-grid" id="shortVideoGrid"></div><div class="empty-category hidden" id="shortEmpty" data-i18n="shortEmpty">No Short Videos uploaded yet.</div><div class="pager" id="shortPager"><button class="btn secondary" id="shortPrev" type="button" onclick="changePage('short',-1)" data-i18n="previous">← Previous</button><span class="page-status" id="shortPageStatus">Page 1 of 1</span><button class="btn secondary" id="shortNext" type="button" onclick="changePage('short',1)" data-i18n="next">Next →</button></div></section>
 <section class="video-section" id="premiumSection"><div class="section-head"><div><h3 data-i18n="premiumHeading">👑 Premium Videos</h3><p class="section-note" data-i18n="premiumNote">VIP access · 6 videos per page</p></div></div><div class="video-grid" id="premiumVideoGrid"></div><div class="empty-category hidden" id="premiumEmpty" data-i18n="premiumEmpty">No Premium Videos uploaded yet.</div><div class="pager" id="premiumPager"><button class="btn secondary" id="premiumPrev" type="button" onclick="changePage('premium',-1)" data-i18n="previous">← Previous</button><span class="page-status" id="premiumPageStatus">Page 1 of 1</span><button class="btn secondary" id="premiumNext" type="button" onclick="changePage('premium',1)" data-i18n="next">Next →</button></div></section>
 </div><p class="status" id="videoStatus" aria-live="polite"></p></section>
 <section class="panel hidden" id="plans"><h2 data-i18n="plansTitle">Choose Your VIP Plan</h2><p class="muted"><span data-i18n="selectedVideo">Selected video:</span> <strong id="videoChoice"></strong></p><div class="grid"><div class="plan"><h3 data-i18n="oneMonth">1 Month</h3><div class="price">1500 <span data-i18n="birr">birr</span></div><p class="muted" data-i18n="oneDesc">One month of VIP access</p><button class="btn" onclick="choosePlan('1 Month',1500)" data-i18n="choose">CHOOSE PLAN</button></div><div class="plan"><h3 data-i18n="sixMonths">6 Months</h3><div class="price">2,990 <span data-i18n="birr">birr</span></div><p class="muted" data-i18n="sixDesc">Six months of VIP access</p><button class="btn" onclick="choosePlan('6 Months',2990)" data-i18n="choose">CHOOSE PLAN</button></div><div class="plan"><h3 data-i18n="twoYears">2 Years</h3><div class="price">5,990 <span data-i18n="birr">birr</span></div><p class="muted" data-i18n="twoDesc">Two years of VIP access</p><button class="btn" onclick="choosePlan('2 Years',5990)" data-i18n="choose">CHOOSE PLAN</button></div></div></section>
@@ -92,8 +102,40 @@ const action=()=>cat==='short'?playFreeVideo(video.pathname,title):openPaymentPa
 function render(cat){const grid=document.getElementById(cat==='short'?'shortVideoGrid':'premiumVideoGrid'),empty=document.getElementById(cat==='short'?'shortEmpty':'premiumEmpty'),pager=document.getElementById(cat==='short'?'shortPager':'premiumPager'),prev=document.getElementById(cat==='short'?'shortPrev':'premiumPrev'),next=document.getElementById(cat==='short'?'shortNext':'premiumNext'),label=document.getElementById(cat==='short'?'shortPageStatus':'premiumPageStatus'),items=state[cat],count=Math.max(1,Math.ceil(items.length/PAGE_SIZE));pages[cat]=Math.max(1,Math.min(pages[cat],count));grid.replaceChildren();items.slice((pages[cat]-1)*PAGE_SIZE,pages[cat]*PAGE_SIZE).forEach(v=>grid.append(createCard(v,cat)));empty.classList.toggle('hidden',items.length>0);pager.classList.toggle('hidden',items.length===0);prev.disabled=pages[cat]===1;next.disabled=pages[cat]===count;prev.style.opacity=prev.disabled?'.45':'1';next.style.opacity=next.disabled?'.45':'1';label.textContent=T[lang].page+' '+pages[cat]+' '+T[lang].of+' '+count}
 function changePage(cat,delta){const count=Math.max(1,Math.ceil(state[cat].length/PAGE_SIZE)),n=pages[cat]+delta;if(n<1||n>count)return;pages[cat]=n;render(cat);document.getElementById(cat==='short'?'shortSection':'premiumSection').scrollIntoView({behavior:'smooth',block:'start'})}
 async function loadUploadedVideos(){const status=document.getElementById('videoStatus');status.textContent='';try{const r=await fetch('/api/videos',{cache:'no-store'});if(!r.ok)throw Error('Video list API unavailable');const data=await r.json(),videos=Array.isArray(data.videos)?data.videos:[];state.short=[];state.premium=[];videos.forEach(v=>{if(!v||typeof v.pathname!=='string'||!v.pathname)return;const c=String(v.category||'').trim().toLowerCase().replace(/[_-]+/g,' ').replace(/\s+/g,' ');( ['short','short video','short videos'].includes(c)?state.short:state.premium).push(v)});pages.short=1;pages.premium=1;render('short');render('premium');status.textContent=''}catch(e){console.error('Could not load uploaded videos:',e);status.textContent=T[lang].loadError;render('short');render('premium')}}
-function playFreeVideo(pathname,title){const dialog=document.getElementById('freeVideoDialog'),player=document.getElementById('freeVideoPlayer'),msg=document.getElementById('freeVideoMessage');player.setAttribute('controlsList','nodownload noplaybackrate');player.setAttribute('disablePictureInPicture','');player.oncontextmenu=()=>false;player.pause();player.removeAttribute('src');player.load();document.getElementById('freeVideoTitle').textContent=title+' — '+T[lang].freeVideo;msg.textContent=T[lang].loadingVideo;player.src='/api/video-play?pathname='+encodeURIComponent(pathname);player.onerror=()=>msg.textContent=T[lang].playError;player.onloadedmetadata=()=>msg.textContent='';dialog.classList.remove('hidden');player.load();player.play().catch(()=>{})}
-function closeFreeVideo(){const d=document.getElementById('freeVideoDialog'),p=document.getElementById('freeVideoPlayer');p.pause();p.removeAttribute('src');p.load();d.classList.add('hidden')}
+function playFreeVideo(pathname,title){
+  const box=document.getElementById('inlineShortPlayer');
+  const player=document.getElementById('inlineShortVideo');
+
+  document.getElementById('inlineShortTitle').textContent=title;
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+
+  player.src='/api/video-play?pathname='+encodeURIComponent(pathname);
+  box.classList.remove('hidden');
+
+  document.getElementById('shortVideoGrid').classList.add('hidden');
+  document.getElementById('shortPager').classList.add('hidden');
+
+  player.onerror=()=>{
+    document.getElementById('inlineShortTitle').textContent=
+      title+' — Video could not be loaded';
+  };
+
+  box.scrollIntoView({behavior:'smooth',block:'start'});
+  player.play().catch(()=>{});
+}
+
+function closeInlineShortVideo(){
+  const player=document.getElementById('inlineShortVideo');
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+
+  document.getElementById('inlineShortPlayer').classList.add('hidden');
+  document.getElementById('shortVideoGrid').classList.remove('hidden');
+  document.getElementById('shortPager').classList.remove('hidden');
+}
 function openPaymentPage(name){const url=new URL('payment.html',window.location.href);url.searchParams.set('video',name);url.searchParams.set('plan','1-month');window.location.href=url.toString()}
 setLanguage(lang);loadUploadedVideos();
 </script>
