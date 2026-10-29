@@ -23,6 +23,15 @@ a{color:var(--gold)}button{font:inherit}.wrap{width:min(1050px,92%);margin:auto}
   border-bottom:1px solid var(--gold);
 }
 .badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);padding:5px 13px;border-radius:99px;font-size:13px;letter-spacing:.04em}
+  .brand-logo{
+  display:block;
+  width:110px;
+  height:110px;
+  object-fit:contain;
+  margin:0 auto 16px;
+  border-radius:50%;
+  filter:drop-shadow(0 4px 12px #0008);
+}
 .hero h1{font-size:clamp(35px,8vw,64px);line-height:1.1;margin:18px 0 10px}.gold{color:var(--gold)}.hero h2{font-size:clamp(23px,5vw,34px);margin:18px 0 10px}.hero p,.muted{color:var(--muted)}.hero-copy{max-width:760px;margin:0 auto 20px}
 .panel{background:rgba(33,23,41,.92);border:1px solid var(--line);border-radius:18px;padding:22px;margin:20px 0}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
@@ -51,14 +60,23 @@ a{color:var(--gold)}button{font:inherit}.wrap{width:min(1050px,92%);margin:auto}
 <body>
 <div class="language-switch" aria-label="Language selector"><button type="button" id="langAm" onclick="setLanguage('am')">አማርኛ</button><button type="button" id="langEn" onclick="setLanguage('en')">English</button></div>
 <div id="ageGate" style="position:fixed;inset:0;background:#0d0911f5;z-index:10;display:grid;place-items:center;padding:20px"><div style="max-width:450px;text-align:center;background:var(--panel);border:1px solid var(--gold);border-radius:18px;padding:28px"><div style="font-size:44px">🔞</div><h2 data-i18n="ageTitle">18+ Access</h2><p data-i18n="ageText">This website is intended for adults aged 18 and over only.</p><button class="btn" onclick="confirmAdult()" data-i18n="ageYes">I am 18+ — Enter</button> <button class="btn secondary" onclick="denyAdult()" data-i18n="ageNo">I am under 18</button></div></div>
-<header class="hero"><div class="wrap"><span class="badge">REAL HABESHA SECRET</span><h1>ONLY <span class="gold">HABESHA</span></h1><h2 data-i18n="welcome">🔥 WELCOME TO ONLY HABESHA VIP! 👑</h2><p class="hero-copy" data-i18n="intro">Unlock exclusive Habesha videos, fresh premium content, and private photo collections available to our VIP members only. 🔞✨</p><a class="btn" href="#categories" data-i18n="explore">EXPLORE VIP ↓</a></div></header>
+
+<header class="hero">
+  <div class="wrap">
+    <img
+      src="/logo.png"
+      alt="ONLY HABESHA Logo"
+      class="brand-logo"
+    >
+    <span class="badge">REAL HABESHA SECRET</span>
+  <h1>ONLY <span class="gold">HABESHA</span></h1><h2 data-i18n="welcome">🔥 WELCOME TO ONLY HABESHA VIP! 👑</h2><p class="hero-copy" data-i18n="intro">Unlock exclusive Habesha videos, fresh premium content, and private photo collections available to our VIP members only. 🔞✨</p><a class="btn" href="#categories" data-i18n="explore">EXPLORE VIP ↓</a></div></header>
 <main class="wrap">
 <section class="panel" id="categories"><h2 data-i18n="categoriesTitle">🎬 Explore Categories</h2><p class="muted" data-i18n="categoryInfo">Short Videos are free. Premium VIP videos are shown separately below.</p>
 <div class="categories"><button class="category active" data-cat="all" onclick="filterVideos('all',this)" data-i18n="all">All Videos</button><button class="category" data-cat="short" onclick="filterVideos('short',this)" data-i18n="short">Short Videos</button><button class="category" data-cat="premium" onclick="filterVideos('premium',this)" data-i18n="premium">Premium VIP</button></div>
 <div id="videoGrid">
 <section class="video-section" id="shortSection"><div class="section-head"><div><h3 data-i18n="shortHeading">▶ Short Videos</h3><p class="section-note" data-i18n="shortNote">Free to watch · </p></div></div><div id="inlineShortPlayer" class="hidden" style="margin-bottom:16px">
   <video id="inlineShortVideo"
-    ጮንትሮልስ controlsList="nodownload"
+    controls controlsList="nodownload"
     playsinline
     preload="metadata"
     style="width:100%;max-height:70vh;object-fit:contain;background:#000;border-radius:12px">
@@ -139,11 +157,12 @@ function closeInlineShortVideo(){
 function openPaymentPage(name){const url=new URL('payment.html',window.location.href);url.searchParams.set('video',name);url.searchParams.set('plan','1-month');window.location.href=url.toString()}
 setLanguage(lang);loadUploadedVideos();
 </script>
-  <script>
+<script>
 document.addEventListener('contextmenu', function(event) {
   if (event.target.closest('video')) {
     event.preventDefault();
   }
 });
+</script>
 </body>
 </html>
