@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -151,9 +152,7 @@ hr{border:0;border-top:1px solid #4b3856;margin:22px 0}
   </section>
 </main>
 
-<script type="module">
-import { upload } from "https://esm.sh/@vercel/blob@2.6.1/client";
-
+<script>
 const loginForm = document.getElementById("login");
 const loginButton = document.getElementById("loginButton");
 const statusEl = document.getElementById("status");
@@ -225,6 +224,7 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
+/* Storj direct upload */
 videoForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -236,12 +236,7 @@ videoForm.addEventListener("submit", async (event) => {
   const thumbnail = document.getElementById("thumbnail").value.trim();
   const isPublished = document.getElementById("publish").checked;
 
-  if (!file) {
-    uploadStatus.textContent = "Please select a video file.";
-    return;
-  }
-
-  if (!file.type.startsWith("video/")) {
+  if (!file || !file.type.startsWith("video/")) {
     uploadStatus.textContent = "Please select a valid video file.";
     return;
   }
@@ -257,26 +252,44 @@ videoForm.addEventListener("submit", async (event) => {
   }
 
   uploadButton.disabled = true;
-  uploadStatus.textContent = "Starting upload...";
 
   try {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    uploadStatus.textContent = "Preparing Storj upload...";
 
-    const result = await upload(
-      "videos/" + safeName,
-      file,
-      {
-        access: "private",
-        handleUploadUrl: "/api/video-upload",
-        onUploadProgress: (event) => {
-          uploadStatus.textContent =
-            "Uploading video: " + Math.round(event.percentage) + "%";
-        }
-      }
-    );
+    const prepareResponse = await fetch("/api/video-upload", {
+      method: "POST",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+        size: file.size
+      })
+    });
 
-    uploadStatus.textContent =
-      "Upload complete. Saving video details...";
+    const prepared = await readJson(prepareResponse);
+
+    if (!prepared.uploadUrl || !prepared.pathname) {
+      throw new Error("Storj upload URL was not returned.");
+    }
+
+    uploadStatus.textContent = "Uploading video to Storj...";
+
+    const uploadResponse = await fetch(prepared.uploadUrl, {
+      method: "PUT",
+      headers: {"Content-Type": file.type},
+      body: file
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(
+        "Storj upload failed (HTTP " + uploadResponse.status +
+        "). Check Storj bucket CORS and settings."
+      );
+    }
+
+    uploadStatus.textContent = "Upload complete. Saving video details...";
 
     const saveResponse = await fetch("/api/admin-video-save", {
       method: "POST",
@@ -287,7 +300,7 @@ videoForm.addEventListener("submit", async (event) => {
         description,
         category,
         duration,
-        pathname: result.pathname,
+        pathname: prepared.pathname,
         original_filename: file.name,
         mime_type: file.type,
         size_bytes: file.size,
@@ -299,7 +312,7 @@ videoForm.addEventListener("submit", async (event) => {
     await readJson(saveResponse);
 
     uploadStatus.textContent =
-      "Success! Video uploaded and details saved.\n" +
+      "Success! Video uploaded to Storj and details saved.\n" +
       "Category: " +
       (category === "short" ? "Short Videos — Free" : "Premium / VIP") +
       "\nPublished: " + (isPublished ? "Yes" : "No");
@@ -307,10 +320,11 @@ videoForm.addEventListener("submit", async (event) => {
     videoForm.reset();
     document.getElementById("publish").checked = true;
     await loadVideos();
+
   } catch (error) {
-    console.error("Video upload/save error:", error);
+    console.error("Storj upload/save error:", error);
     uploadStatus.textContent =
-      "Error: " + (error.message || "Upload failed. Check your settings and try again.");
+      "Error: " + (error.message || "Upload failed. Please try again.");
   } finally {
     uploadButton.disabled = false;
   }
@@ -388,8 +402,7 @@ function renderVideos() {
       card.append(image);
     }
 
-    const idText = makeElement("p", "video-meta", "ID: " + String(video.id));
-    card.append(idText);
+    card.append(makeElement("p", "video-meta", "ID: " + String(video.id)));
 
     const titleLabel = makeElement("label", "", "Video Title");
     const titleInput = document.createElement("input");
@@ -504,9 +517,9 @@ function renderVideos() {
 
     deleteButton.addEventListener("click", async () => {
       const confirmed = confirm(
-        "Delete the database record for \"" +
+        'Delete the database record for "' +
         (video.title || "this video") +
-        "\"?\n\nThe stored video file will NOT be deleted by this action."
+        '"?\n\nThe stored video file will NOT be deleted by this action.'
       );
 
       if (!confirmed) return;
