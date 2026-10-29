@@ -1,10 +1,13 @@
 
 const {
   S3Client,
+  HeadObjectCommand,
   GetObjectCommand
 } = require("@aws-sdk/client-s3");
 
+const { get } = require("@vercel/blob");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { Readable } = require("node:stream");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "private, no-store");
@@ -12,9 +15,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
-    return res.status(405).json({
-      error: "GET method required"
-    });
+    return res.status(405).json({ error: "GET method required" });
   }
 
   const pathname =
@@ -29,9 +30,7 @@ module.exports = async function handler(req, res) {
     pathname.includes("\\") ||
     !pathname.startsWith("videos/")
   ) {
-    return res.status(400).json({
-      error: "የቪዲዮው አድራሻ ትክክል አይደለም።"
-    });
+    return res.status(400).json({ error: "Invalid video pathname" });
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -41,57 +40,53 @@ module.exports = async function handler(req, res) {
 
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({
-      error: "የSupabase የአገልጋይ ቅንብር ጎድሏል።"
+      error: "Supabase configuration is missing"
     });
   }
 
   try {
     const baseUrl = supabaseUrl.replace(/\/+$/, "");
-
     const headers = {
       apikey: supabaseKey,
       Authorization: "Bearer " + supabaseKey
     };
 
-    const select =
-      "pathname,storage_path,category,video_url,is_published,mime_type";
-
-    async function findVideo(column) {
+    async function findVideo(column, value) {
       const url = new URL(baseUrl + "/rest/v1/videos");
-
-      url.searchParams.set("select", select);
-      url.searchParams.set(column, "eq." + pathname);
+      url.searchParams.set(
+        "select",
+        "pathname,storage_path,category,video_url,is_published"
+      );
+      url.searchParams.set(column, "eq." + value);
       url.searchParams.set("limit", "1");
 
       const response = await fetch(url.toString(), { headers });
 
       if (!response.ok) {
         console.error(
-          "Supabase video lookup failed:",
+          "Video lookup failed:",
           response.status,
           await response.text()
         );
-        throw new Error("Supabase video lookup failed");
+        throw new Error("Could not verify video");
       }
 
       const rows = await response.json();
       return rows[0] || null;
     }
 
-    // በSupabase ውስጥ ቪዲዮውን ፈልግ።
-    let video = await findVideo("pathname");
+    let video = await findVideo("pathname", pathname);
 
     if (!video) {
-      video = await findVideo("storage_path");
+      video = await findVideo("storage_path", pathname);
     }
 
     if (!video || video.is_published !== true) {
       return res.status(404).json({
-        error: "የታተመው ቪዲዮ አልተገኘም።"
+        error: "Published video not found"
       });
     }
 
-    // ነፃ Short Videos ብቻ ይፈቀዳሉ።
     const category = String(video.category || "")
       .trim()
       .toLowerCase()
@@ -106,25 +101,7 @@ module.exports = async function handler(req, res) {
 
     if (!isShortVideo) {
       return res.status(403).json({
-        error: "ይህ ቪዲዮ በነፃ አይጫወትም። Premium VIP አባልነት ያስፈልጋል።"
-      });
-    }
-
-    const objectKey =
-      typeof video.pathname === "string" &&
-      video.pathname.startsWith("videos/")
-        ? video.pathname
-        : video.storage_path;
-
-    if (
-      typeof objectKey !== "string" ||
-      !objectKey.startsWith("videos/") ||
-      objectKey.startsWith("/") ||
-      objectKey.includes("..") ||
-      objectKey.includes("\\")
-    ) {
-      return res.status(404).json({
-        error: "የቪዲዮው Storage Path ትክክል አይደለም።"
+        error: "This video is not available for free playback"
       });
     }
 
@@ -136,7 +113,24 @@ module.exports = async function handler(req, res) {
     const accessKeyId = process.env.STORJ_ACCESS_KEY_ID;
     const secretAccessKey = process.env.STORJ_SECRET_ACCESS_KEY;
 
-    if (bucket && accessKeyId && secretAccessKey) {
+    const storagePath =
+      typeof video.storage_path === "string"
+        ? video.storage_path
+        : "";
+
+    const storjKey = storagePath.startsWith("videos/")
+      ? storagePath
+      : pathname;
+
+    // First, try Storj.
+    if (
+      bucket &&
+      accessKeyId &&
+      secretAccessKey &&
+      storjKey.startsWith("videos/") &&
+      !storjKey.includes("..") &&
+      !storjKey.includes("\\")
+    ) {
       const s3 = new S3Client({
         endpoint,
         region,
@@ -147,21 +141,63 @@ module.exports = async function handler(req, res) {
         forcePathStyle: true
       });
 
-      const command = new GetObjectCommand({
-        Bucket: bucket,
-        Key: objectKey
-      });
+      try {
+        await s3.send(
+          new HeadObjectCommand({
+            Bucket: bucket,
+            Key: storjKey
+          })
+        );
 
-      // የቪዲዮው የጊዜያዊ አድራሻ 5 ደቂቃ ብቻ ይሠራል።
-      const signedUrl = await getSignedUrl(s3, command, {
-        expiresIn: 300
-      });
+        const signedUrl = await getSignedUrl(
+          s3,
+          new GetObjectCommand({
+            Bucket: bucket,
+            Key: storjKey
+          }),
+          { expiresIn: 300 }
+        );
 
-      res.setHeader("Referrer-Policy", "no-referrer");
-      return res.redirect(302, signedUrl);
+        return res.redirect(302, signedUrl);
+      } catch (storjError) {
+        console.warn(
+          "Storj object unavailable; trying legacy Blob:",
+          storjError.name || storjError.message
+        );
+      }
     }
 
-    // ቀድሞ በSupabase Storage የተቀመጡ ቪዲዮዎችን ይደግፋል።
+    // If the file is not in Storj, try the old private Vercel Blob.
+    try {
+      const blob = await get(pathname, {
+        access: "private"
+      });
+
+      if (blob && blob.statusCode === 200 && blob.stream) {
+        res.statusCode = 200;
+        res.setHeader(
+          "Content-Type",
+          blob.blob?.contentType || "video/mp4"
+        );
+        res.setHeader("Content-Disposition", "inline");
+
+        if (blob.blob?.size != null) {
+          res.setHeader(
+            "Content-Length",
+            String(blob.blob.size)
+          );
+        }
+
+        return Readable.fromWeb(blob.stream).pipe(res);
+      }
+    } catch (blobError) {
+      console.warn(
+        "Legacy Blob playback unavailable:",
+        blobError.message
+      );
+    }
+
+    // Last fallback: older public Supabase video files.
     const videoUrl =
       typeof video.video_url === "string"
         ? video.video_url
@@ -170,22 +206,39 @@ module.exports = async function handler(req, res) {
     const expectedPrefix =
       baseUrl + "/storage/v1/object/public/videos/";
 
-    if (
-      videoUrl &&
-      videoUrl.startsWith(expectedPrefix)
-    ) {
-      res.setHeader("Referrer-Policy", "no-referrer");
-      return res.redirect(302, videoUrl);
+    if (videoUrl.startsWith(expectedPrefix)) {
+      const response = await fetch(videoUrl);
+
+      if (response.ok && response.body) {
+        res.statusCode = 200;
+        res.setHeader(
+          "Content-Type",
+          response.headers.get("content-type") || "video/mp4"
+        );
+        res.setHeader("Content-Disposition", "inline");
+
+        const length = response.headers.get("content-length");
+        if (length) {
+          res.setHeader("Content-Length", length);
+        }
+
+        return Readable.fromWeb(response.body).pipe(res);
+      }
     }
 
-    return res.status(500).json({
-      error: "የStorj ቅንብር ጎድሏል። Vercel Environment Variables አረጋግጥ።"
+    return res.status(404).json({
+      error:
+        "Video file was not found in Storj, Vercel Blob, or legacy Supabase storage"
     });
   } catch (error) {
     console.error("Video playback error:", error);
 
-    return res.status(500).json({
-      error: "ቪዲዮውን ማጫወት አልተቻለም። የStorj እና Supabase ቅንብሮችን አረጋግጥ።"
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        error: "Could not play video. Check storage configuration."
+      });
+    }
+
+    return res.end();
   }
 };
