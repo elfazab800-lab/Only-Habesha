@@ -1,32 +1,36 @@
 
-const { get } = require('@vercel/blob');
-const { Readable } = require('node:stream');
+const {
+  S3Client,
+  GetObjectCommand
+} = require("@aws-sdk/client-s3");
+
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 'private, no-store');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader("Cache-Control", "private, no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
 
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
     return res.status(405).json({
-      error: 'GET method required'
+      error: "GET method required"
     });
   }
 
   const pathname =
-    typeof req.query.pathname === 'string'
+    typeof req.query.pathname === "string"
       ? req.query.pathname
-      : '';
+      : "";
 
   if (
     !pathname ||
-    pathname.startsWith('/') ||
-    pathname.includes('..') ||
-    pathname.includes('\\') ||
-    !pathname.startsWith('videos/')
+    pathname.startsWith("/") ||
+    pathname.includes("..") ||
+    pathname.includes("\\") ||
+    !pathname.startsWith("videos/")
   ) {
     return res.status(400).json({
-      error: 'Invalid video pathname'
+      error: "የቪዲዮው አድራሻ ትክክል አይደለም።"
     });
   }
 
@@ -35,173 +39,153 @@ module.exports = async function handler(req, res) {
     process.env.SUPABASE_SECRET_KEY ||
     process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({
+      error: "የSupabase የአገልጋይ ቅንብር ጎድሏል።"
+    });
+  }
+
   try {
-    let video = null;
+    const baseUrl = supabaseUrl.replace(/\/+$/, "");
 
-    // Find the published video in Supabase.
-    if (supabaseUrl && supabaseKey) {
-      const baseUrl = supabaseUrl.replace(/\/+$/, '');
-      const queryUrl = new URL(baseUrl + '/rest/v1/videos');
+    const headers = {
+      apikey: supabaseKey,
+      Authorization: "Bearer " + supabaseKey
+    };
 
-      queryUrl.searchParams.set(
-        'select',
-        'pathname,storage_path,category,video_url,is_published'
-      );
-      queryUrl.searchParams.set('pathname', 'eq.' + pathname);
-      queryUrl.searchParams.set('limit', '1');
+    const select =
+      "pathname,storage_path,category,video_url,is_published,mime_type";
 
-      const dbResponse = await fetch(queryUrl.toString(), {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: 'Bearer ' + supabaseKey
-        }
-      });
+    async function findVideo(column) {
+      const url = new URL(baseUrl + "/rest/v1/videos");
 
-      if (!dbResponse.ok) {
+      url.searchParams.set("select", select);
+      url.searchParams.set(column, "eq." + pathname);
+      url.searchParams.set("limit", "1");
+
+      const response = await fetch(url.toString(), { headers });
+
+      if (!response.ok) {
         console.error(
-          'Video lookup failed:',
-          dbResponse.status,
-          await dbResponse.text()
+          "Supabase video lookup failed:",
+          response.status,
+          await response.text()
         );
-
-        return res.status(502).json({
-          error: 'Could not verify video'
-        });
+        throw new Error("Supabase video lookup failed");
       }
 
-      const rows = await dbResponse.json();
-      video = rows[0] || null;
+      const rows = await response.json();
+      return rows[0] || null;
+    }
 
-      // Some existing rows may use storage_path instead.
-      if (!video) {
-        const fallbackUrl = new URL(
-          baseUrl + '/rest/v1/videos'
-        );
+    // በSupabase ውስጥ ቪዲዮውን ፈልግ።
+    let video = await findVideo("pathname");
 
-        fallbackUrl.searchParams.set(
-          'select',
-          'pathname,storage_path,category,video_url,is_published'
-        );
-        fallbackUrl.searchParams.set(
-          'storage_path',
-          'eq.' + pathname
-        );
-        fallbackUrl.searchParams.set('limit', '1');
-
-        const fallbackResponse = await fetch(
-          fallbackUrl.toString(),
-          {
-            headers: {
-              apikey: supabaseKey,
-              Authorization: 'Bearer ' + supabaseKey
-            }
-          }
-        );
-
-        if (fallbackResponse.ok) {
-          const fallbackRows = await fallbackResponse.json();
-          video = fallbackRows[0] || null;
-        }
-      }
+    if (!video) {
+      video = await findVideo("storage_path");
     }
 
     if (!video || video.is_published !== true) {
       return res.status(404).json({
-        error: 'Published video not found'
+        error: "የታተመው ቪዲዮ አልተገኘም።"
       });
     }
 
-    const category = String(video.category || '')
+    // ነፃ Short Videos ብቻ ይፈቀዳሉ።
+    const category = String(video.category || "")
       .trim()
       .toLowerCase()
-      .replace(/[_-]+/g, ' ')
-      .replace(/\s+/g, ' ');
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ");
 
-    // Only free Short Videos may use this endpoint.
     const isShortVideo = [
-      'short',
-      'short video',
-      'short videos'
+      "short",
+      "short video",
+      "short videos"
     ].includes(category);
 
     if (!isShortVideo) {
       return res.status(403).json({
-        error: 'This video is not available for free playback'
+        error: "ይህ ቪዲዮ በነፃ አይጫወትም። Premium VIP አባልነት ያስፈልጋል።"
       });
     }
 
-    // New videos stored in private Vercel Blob.
-    if (pathname.startsWith('videos/')) {
-      const blob = await get(pathname, {
-        access: 'private'
-      });
+    const objectKey =
+      typeof video.pathname === "string" &&
+      video.pathname.startsWith("videos/")
+        ? video.pathname
+        : video.storage_path;
 
-      if (!blob || blob.statusCode !== 200 || !blob.stream) {
-        return res.status(404).json({
-          error: 'Video file not found in private Blob storage'
-        });
-      }
-
-      res.statusCode = 200;
-      res.setHeader(
-        'Content-Type',
-        blob.blob.contentType || 'video/mp4'
-      );
-      res.setHeader('Content-Disposition', 'inline');
-
-      if (blob.blob.size != null) {
-        res.setHeader('Content-Length', String(blob.blob.size));
-      }
-
-      return Readable.fromWeb(blob.stream).pipe(res);
-    }
-
-    // Legacy Supabase public videos.
-    const videoUrl =
-      typeof video.video_url === 'string'
-        ? video.video_url
-        : '';
-
-    const baseUrl = supabaseUrl.replace(/\/+$/, '');
-    const expectedPrefix =
-      baseUrl + '/storage/v1/object/public/videos/';
-
-    if (!videoUrl.startsWith(expectedPrefix)) {
+    if (
+      typeof objectKey !== "string" ||
+      !objectKey.startsWith("videos/") ||
+      objectKey.startsWith("/") ||
+      objectKey.includes("..") ||
+      objectKey.includes("\\")
+    ) {
       return res.status(404).json({
-        error: 'Supabase video URL is missing or invalid'
+        error: "የቪዲዮው Storage Path ትክክል አይደለም።"
       });
     }
 
-    const videoResponse = await fetch(videoUrl);
+    const bucket = process.env.STORJ_BUCKET;
+    const endpoint =
+      process.env.STORJ_ENDPOINT ||
+      "https://gateway.storjshare.io";
+    const region = process.env.STORJ_REGION || "global";
+    const accessKeyId = process.env.STORJ_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.STORJ_SECRET_ACCESS_KEY;
 
-    if (!videoResponse.ok || !videoResponse.body) {
-      return res.status(502).json({
-        error: 'Could not retrieve legacy video'
+    if (bucket && accessKeyId && secretAccessKey) {
+      const s3 = new S3Client({
+        endpoint,
+        region,
+        credentials: {
+          accessKeyId,
+          secretAccessKey
+        },
+        forcePathStyle: true
       });
+
+      const command = new GetObjectCommand({
+        Bucket: bucket,
+        Key: objectKey
+      });
+
+      // የቪዲዮው የጊዜያዊ አድራሻ 5 ደቂቃ ብቻ ይሠራል።
+      const signedUrl = await getSignedUrl(s3, command, {
+        expiresIn: 300
+      });
+
+      res.setHeader("Referrer-Policy", "no-referrer");
+      return res.redirect(302, signedUrl);
     }
 
-    res.statusCode = 200;
-    res.setHeader(
-      'Content-Type',
-      videoResponse.headers.get('content-type') || 'video/mp4'
-    );
-    res.setHeader('Content-Disposition', 'inline');
+    // ቀድሞ በSupabase Storage የተቀመጡ ቪዲዮዎችን ይደግፋል።
+    const videoUrl =
+      typeof video.video_url === "string"
+        ? video.video_url
+        : "";
 
-    const length = videoResponse.headers.get('content-length');
-    if (length) {
-      res.setHeader('Content-Length', length);
+    const expectedPrefix =
+      baseUrl + "/storage/v1/object/public/videos/";
+
+    if (
+      videoUrl &&
+      videoUrl.startsWith(expectedPrefix)
+    ) {
+      res.setHeader("Referrer-Policy", "no-referrer");
+      return res.redirect(302, videoUrl);
     }
 
-    return Readable.fromWeb(videoResponse.body).pipe(res);
+    return res.status(500).json({
+      error: "የStorj ቅንብር ጎድሏል። Vercel Environment Variables አረጋግጥ።"
+    });
   } catch (error) {
-    console.error('Video playback error:', error);
+    console.error("Video playback error:", error);
 
-    if (!res.headersSent) {
-      return res.status(500).json({
-        error: 'Could not play video. Check Blob configuration.'
-      });
-    }
-
-    return res.end();
+    return res.status(500).json({
+      error: "ቪዲዮውን ማጫወት አልተቻለም። የStorj እና Supabase ቅንብሮችን አረጋግጥ።"
+    });
   }
 };
