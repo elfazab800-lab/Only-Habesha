@@ -98,7 +98,7 @@ hr{border:0;border-top:1px solid #4b3856;margin:22px 0}
 
       <label for="category">Video Category *</label>
       <select id="category" required>
-        <option value="short">Short Videos — Free</option>
+        <option value="short">Preview Videos — Free</option>
         <option value="premium">Premium / VIP — Paid</option>
       </select>
 
@@ -144,7 +144,7 @@ hr{border:0;border-top:1px solid #4b3856;margin:22px 0}
 
     <hr>
     <p class="muted note">
-      Short Videos are intended to be free to watch.
+      Preview Videos are intended to be free to watch.
       Premium / VIP videos require server-side access protection before
       paid viewing is enabled.
     </p>
@@ -314,7 +314,7 @@ videoForm.addEventListener("submit", async (event) => {
     uploadStatus.textContent =
       "Success! Video uploaded to Storj and details saved.\n" +
       "Category: " +
-      (category === "short" ? "Short Videos — Free" : "Premium / VIP") +
+      (category === "short" ? "Preview Videos — Free" : "Premium / VIP") +
       "\nPublished: " + (isPublished ? "Yes" : "No");
 
     videoForm.reset();
@@ -387,7 +387,7 @@ function renderVideos() {
     const badge = makeElement(
       "span",
       "pill",
-      (video.category === "premium" ? "Premium / VIP" : "Short / Free") +
+      (video.category === "premium" ? "Premium / VIP" : "Preview / Free") +
       " · " + (video.is_published ? "Published" : "Unpublished")
     );
 
@@ -424,7 +424,7 @@ function renderVideos() {
     const categorySelect = document.createElement("select");
 
     for (const optionData of [
-      ["short", "Short Videos — Free"],
+      ["short", "Preview Videos — Free"],
       ["premium", "Premium / VIP — Paid"]
     ]) {
       const option = document.createElement("option");

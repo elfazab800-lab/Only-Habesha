@@ -1,0 +1,10 @@
+node_modules/
+*.bak
+*.backup
+*.bak-*
+nodesource_setup.sh
+.env
+.env.*
+!.env.example
+*-backup*
+*.backup-*

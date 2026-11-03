@@ -169,7 +169,7 @@ footer {
          data-am="ፕላኑን ይምረጡ" data-en="Choose Plan">ፕላኑን ይምረጡ</a>
     </article>
 
-    <article class="plan featured">
+    <article class="plan featured" id="annual-plan">
       <span class="ribbon" data-am="ተመራጭ" data-en="POPULAR">ተመራጭ</span>
       <h2 data-am="Annual VIP" data-en="Annual VIP">Annual VIP</h2>
       <div class="price">2,990 <small>ETB</small></div>
@@ -224,6 +224,11 @@ setLanguage(savedLang);
 const params = new URLSearchParams(location.search);
 const selectedVideo = params.get('video');
 if (selectedVideo) {
+  document.querySelector('#annual-plan').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+
   document.querySelectorAll('.plan-link').forEach(link => {
     const plan = link.dataset.plan;
     link.href = 'telebirr.html?plan=' + encodeURIComponent(plan) +
