@@ -260,6 +260,10 @@ function chooseMethod(method,button){
   const info=document.getElementById('methodInfo');
   const action=document.getElementById('payAction');
 
+  setTimeout(()=>{
+    info.scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+
   if(method==='Telebirr'){
     info.innerHTML=`
       <h2>📱 Telebirr Payment</h2>
