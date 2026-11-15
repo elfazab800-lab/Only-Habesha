@@ -186,7 +186,7 @@ footer{text-align:center;color:var(--muted);padding:25px;border-top:1px solid va
 
   <div class="actions">
     <button class="btn secondary" onclick="goBack(1)">← Back</button>
-    <button class="btn" onclick="goNext()">Confirm Selection →</button>
+    <a class="btn" id="payAction" href="https://t.me/OnlyhabeshanpaymantBot" target="_blank">Submit Receipt →</a>
   </div>
 </section>
 
@@ -258,23 +258,43 @@ function chooseMethod(method,button){
   button.classList.add('selected');
 
   const info=document.getElementById('methodInfo');
+  const action=document.getElementById('payAction');
 
   if(method==='Telebirr'){
-    info.innerHTML='<h2>Pay with Telebirr</h2>'+
-      '<p>1. Open Telebirr app or use the available payment instructions.</p>'+
-      '<p>2. Send the exact package amount to the official Telebirr number.</p>'+
-      '<p>3. Keep your payment receipt.</p>'+
-      '<p>▶ Watch the 58-second Telebirr payment guide.</p>';
+    info.innerHTML=`
+      <h2>📱 Telebirr Payment</h2>
+      <p>Account Name: <strong style="color:#ffd32a">Elias Ali Hussein</strong></p>
+      <p>Account Number: <strong id="telNo" style="color:#ffd32a;font-size:25px">0985975112</strong></p>
+      <button class="btn" onclick="copyText('0985975112')">📋 Copy Telebirr Number</button>
+      <p>Monthly: 1,500 ETB · Annual: 2,990 ETB · Lifetime: 5,990 ETB</p>
+      <p>Pay the exact amount, then submit your receipt to the bot.</p>`;
+    action.href='https://t.me/OnlyhabeshanpaymantBot?start=receipt';
+    action.textContent='📨 Submit Telebirr Receipt';
   }else if(method==='USDT'){
-    info.innerHTML='<h2>Pay with USDT</h2>'+
-      '<p>Select BEP20 or TRC20 network on the payment instructions.</p>'+
-      '<p>Send only USDT to the official wallet address shown by Only Habesha.</p>'+
-      '<p class="muted">Verify the wallet address and network before sending.</p>';
+    const prices={'Monthly VIP':'$15','Annual VIP':'$29','Lifetime VIP':'$59'};
+    info.innerHTML=`
+      <h2>₮ USDT Payment · ${prices[selectedPackage]}</h2>
+      <h3>BEP20 (BNB Smart Chain)</h3>
+      <img src="/bep20.jpg" style="width:180px;max-width:100%;display:block;margin:auto">
+      <p style="word-break:break-all">0x4de5ca6af7cf7c417dc439cfee53c36fd828ae7b</p>
+      <button class="btn" onclick="copyText('0x4de5ca6af7cf7c417dc439cfee53c36fd828ae7b')">📋 Copy BEP20 Address</button>
+      <hr>
+      <h3>TRC20 (Tron)</h3>
+      <img src="/trc20.jpg" style="width:180px;max-width:100%;display:block;margin:auto">
+      <p style="word-break:break-all">TDQXevJKf9JJnUjtfHxzJgAjvJ1cBrgRSh</p>
+      <button class="btn" onclick="copyText('TDQXevJKf9JJnUjtfHxzJgAjvJ1cBrgRSh')">📋 Copy TRC20 Address</button>
+      <p style="color:#ffcc33">⚠️ Send USDT only. Select the correct network.</p>`;
+    action.href='https://t.me/OnlyhabeshanpaymantBot?start=receipt';
+    action.textContent='📨 Submit USDT Receipt';
   }else{
-    info.innerHTML='<h2>Pay with Telegram Stars</h2>'+
-      '<p>Open Telegram and complete the Stars payment using the official payment link.</p>'+
-      '<p>Keep your payment confirmation.</p>';
+    info.innerHTML='<h2>⭐ Telegram Stars</h2><p>Open the official payment bot, press Start, then select Telegram Stars.</p>';
+    action.href='https://t.me/OnlyhabeshanpaymantBot';
+    action.textContent='⭐ Open Payment Bot';
   }
+}
+
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>alert('Copied!')).catch(()=>prompt('Copy address:',text));
 }
 
 function goNext(){
