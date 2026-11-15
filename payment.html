@@ -78,9 +78,18 @@ h2{font-size:24px}
 .btn.secondary{background:transparent;color:white}
 .methods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .method{
-  background:var(--panel);border:1px solid var(--line);
+  background:linear-gradient(145deg,#292000,#151515);
+  border:2px solid #ffd32a;
   padding:20px 10px;border-radius:12px;text-align:center;
-  cursor:pointer;font-weight:bold
+  cursor:pointer;font-weight:900;color:#ffd32a;
+  font-size:17px;box-shadow:0 0 10px #ffd32a30;
+  transition:all .2s ease
+}
+.method:hover,.method.selected{
+  background:#ffd32a;color:#000;
+  border-color:#fff0a0;
+  box-shadow:0 0 18px #ffd32a80;
+  transform:translateY(-2px)
 }
 .method.selected{border:2px solid var(--gold);color:var(--gold)}
 .info{
