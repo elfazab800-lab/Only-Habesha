@@ -245,7 +245,19 @@ function showPage(n){
     document.getElementById('step'+i).classList.toggle('active',i===n);
     document.getElementById('step'+i).classList.toggle('done',i<n);
   });
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===1){
+    window.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(scrollToAnnual,350);
+  }else{
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function scrollToAnnual(){
+  const annual=document.querySelector('[data-package="Annual VIP"]');
+  if(annual){
+    annual.scrollIntoView({behavior:'smooth',block:'center'});
+  }
 }
 
 function choosePackage(button){
