@@ -341,7 +341,22 @@ function goNext(){
 function goBack(n){showPage(n)}
 
 function watchGuide(){
-  alert('Add your 58-second Telebirr tutorial video file to connect it here.');
+  const guide=document.querySelector('.guide');
+  guide.innerHTML=`
+    <div style="width:100%">
+      <h3 style="color:#ffd32a;text-align:center">How to Pay from Abroad to Telebirr</h3>
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px">
+        <iframe
+          src="https://www.youtube.com/embed/N03p0PqQkT4"
+          title="How to Pay from Abroad to Telebirr"
+          style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
+          allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <a class="btn secondary" href="https://youtu.be/N03p0PqQkT4" target="_blank">▶ Open on YouTube</a>
+    </div>`;
+  guide.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function setLanguage(lang){
